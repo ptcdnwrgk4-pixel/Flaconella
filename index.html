@@ -651,6 +651,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
       <li><a href="#kontakt">Kontakt</a></li>
       <li><a href="#" onclick="openLegal('impressumModal');return false;">Impressum</a></li>
       <li><a href="#" onclick="openLegal('datenschutzModal');return false;">Datenschutz</a></li>
+      <li><a href="#" onclick="openLegal('agbModal');return false;">AGB</a></li>
     </ul>
   </div>
 </footer>
@@ -747,7 +748,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
         <p>Nach dem Bestellen werden dir die Zahlungsdaten (<strong>Überweisung oder PayPal</strong>) direkt angezeigt. Versand innerhalb von 3–5 Werktagen nach Zahlungseingang. Abholung im Padella Vino (Mo–Sa) möglich.</p>
       </div>
       <button type="submit" class="checkout-submit">Verbindlich bestellen</button>
-      <p class="checkout-note">Mit der Bestellung stimmst du unseren AGB und der Datenschutzerklärung zu. Du erhältst eine Bestätigung per E-Mail.</p>
+      <p class="checkout-note">Mit der Bestellung stimmst du unseren <a href="#" onclick="openLegal('agbModal');return false;" style="color:#c4a96a;">AGB</a> und der <a href="#" onclick="openLegal('datenschutzModal');return false;" style="color:#c4a96a;">Datenschutzerklärung</a> zu. Du erhältst eine Bestätigung per E-Mail.</p>
     </form>
   </div>
 </div>
@@ -782,7 +783,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 
     <h4>Umsatzsteuer-ID</h4>
     <p>Umsatzsteuer-Identifikationsnummer gemäß § 27 a UStG:<br>
-    <strong>[wird nachgereicht]</strong></p>
+    <strong>DE257411644</strong></p>
 
     <h4>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h4>
     <p>Sonja Peters, Anschrift wie oben.</p>
@@ -823,6 +824,40 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
   </div>
 </div>
 
+<!-- AGB -->
+<div class="modal-overlay" id="agbModal">
+  <div class="legal-modal">
+    <button class="modal-close" onclick="closeLegal('agbModal')">✕</button>
+    <h3>Allgemeine Geschäftsbedingungen</h3>
+    <div class="legal-sub">Stand: Juli 2026</div>
+
+    <h4>1. Geltungsbereich & Anbieter</h4>
+    <p>Diese AGB gelten für alle Bestellungen über diesen Online-Shop zwischen Padella Vino, Inhaberin Sonja Peters, Markt 8, 64807 Dieburg (nachfolgend „wir") und dir als Kundin oder Kunde. Vertragssprache ist Deutsch.</p>
+
+    <h4>2. Vertragsschluss</h4>
+    <p>Die Darstellung der Produkte im Shop stellt kein rechtlich bindendes Angebot dar. Mit dem Absenden der Bestellung gibst du ein verbindliches Angebot ab. Der Kaufvertrag kommt zustande, sobald wir deine Bestellung per E-Mail bestätigen.</p>
+
+    <h4>3. Preise & Zahlung</h4>
+    <p>Alle Preise verstehen sich inklusive der gesetzlichen Umsatzsteuer, zzgl. Versandkosten. Die Zahlung erfolgt per Überweisung oder PayPal; die Zahlungsdaten erhältst du unmittelbar nach der Bestellung. Wir liefern gegen Vorkasse nach Zahlungseingang.</p>
+
+    <h4>4. Lieferung & Versandkosten</h4>
+    <p>Wir liefern innerhalb Deutschlands. Die Lieferzeit beträgt in der Regel 3–5 Werktage nach Zahlungseingang. Eine Abholung im Padella Vino, Markt 8, 64807 Dieburg (Mo–Sa) ist nach Absprache möglich. Anfallende Versandkosten werden im Bestellprozess ausgewiesen.</p>
+
+    <h4>5. Widerrufsrecht</h4>
+    <p>Du hast das Recht, binnen 14 Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt 14 Tage ab dem Tag, an dem du oder ein von dir benannter Dritter die Ware in Besitz genommen hat. Um dein Widerrufsrecht auszuüben, musst du uns (Padella Vino, Sonja Peters, Markt 8, 64807 Dieburg, <a href="mailto:hallo@flaconella.de">hallo@flaconella.de</a>) mittels einer eindeutigen Erklärung (z. B. E-Mail) über deinen Entschluss informieren. Zur Wahrung der Frist genügt die rechtzeitige Absendung der Mitteilung.</p>
+    <p><strong>Folgen des Widerrufs:</strong> Wenn du widerrufst, erstatten wir dir alle erhaltenen Zahlungen einschließlich der Standard-Lieferkosten unverzüglich, spätestens binnen 14 Tagen ab Eingang deines Widerrufs. Du trägst die unmittelbaren Kosten der Rücksendung. Für einen etwaigen Wertverlust musst du nur aufkommen, wenn dieser auf einen zur Prüfung der Beschaffenheit nicht notwendigen Umgang mit der Ware zurückzuführen ist.</p>
+
+    <h4>6. Handgefertigte Unikate</h4>
+    <p>Alle Produkte werden in Handarbeit aus recycelten Flaschen gefertigt. Leichte Abweichungen in Form, Farbe, Gravur und Größe sind produkttypisch, machen jedes Stück einzigartig und stellen keinen Sachmangel dar.</p>
+
+    <h4>7. Gewährleistung</h4>
+    <p>Es gelten die gesetzlichen Gewährleistungsrechte.</p>
+
+    <h4>8. Streitbeilegung</h4>
+    <p>Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
+  </div>
+</div>
+
 <!-- TOAST -->
 <div class="toast" id="toast"><span>✓</span> <span id="toastMsg">In den Warenkorb gelegt</span></div>
 
@@ -843,9 +878,9 @@ const PRODUCTS = [
     icon:'🕯️', badge:'Bestseller', badgeType:'',
     image:'images/braune_flasche_windlicht_blumen_01.webp',
     gallery:['images/braune_flasche_windlicht_blumen_01.webp','images/schwarze_flasche_windlicht_beeren_01.webp','images/braune_flasche_windlicht_blumen_02.webp','images/braune_flasche_windlicht_blumen_03.webp'],
+    option:{label:'Motiv', choices:['Trauben-Motiv (braun)','Beeren-Motiv (schwarz)']},
     variants:[
-      {name:'Trauben-Motiv (braun)', price:29},
-      {name:'Beeren-Motiv (schwarz)', price:24},
+      {name:'Standard', price:39},
     ]
   },
   {
@@ -1014,8 +1049,8 @@ const PRODUCTS = [
   {
     id:'c1', cat:'kerze', label:'Kerze',
     name:'Kerze Zitrus Grün',
-    tagline:'Frische Zitrus-Note im grünen Glas',
-    desc:'Handgegossene Duftkerze mit belebender Zitrusnote in einem grünen Glasgefäß. Brenndauer ca. 35 Stunden. Frisch, lebendig, mediterran.',
+    tagline:'Grünes Glas, natürliches Bienenwachs',
+    desc:'Handgegossene Kerze aus natürlichem Bienenwachs im grünen Glasgefäß mit Zitrus-Dekor. Warme, ruhige Flamme, ca. 35 Stunden Brenndauer.',
     icon:'🕯️', badge:'Neu', badgeType:'',
     image:'images/kerze-zitrus-gruen.webp',
     variants:[
@@ -1025,8 +1060,8 @@ const PRODUCTS = [
   {
     id:'c2', cat:'kerze', label:'Kerze',
     name:'Kerze Rosa Blume',
-    tagline:'Blumige Duftkerze, rosafarbene Eleganz',
-    desc:'Handgegossene Kerze mit einem blumigen, femininen Duft. Das rosafarbene Wachs mit dem sanften Stich ins Pastellige macht sie auch optisch zum Geschenk.',
+    tagline:'Bienenwachs, rosafarbene Eleganz',
+    desc:'Handgegossene Kerze aus natürlichem Bienenwachs. Das rosafarbene Gefäß mit sanftem Blütendekor macht sie auch optisch zum Geschenk. Ca. 35 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-rosa-blume.webp',
     variants:[
@@ -1036,8 +1071,8 @@ const PRODUCTS = [
   {
     id:'c3', cat:'kerze', label:'Kerze',
     name:'Kerze Gelb Blume',
-    tagline:'Sonnige Blütennote, warmes Gelb',
-    desc:'Sonniges Gelb, blumiger Duft – diese Kerze bringt Frühling ins Zimmer. Handgegossen, ca. 35 Stunden Brenndauer.',
+    tagline:'Bienenwachs, sonniges Gelb',
+    desc:'Sonniges Gelb mit feinem Blütendekor – handgegossen aus natürlichem Bienenwachs. Bringt Frühling ins Zimmer. Ca. 35 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-gelb-blume.webp',
     variants:[
@@ -1048,7 +1083,7 @@ const PRODUCTS = [
     id:'c4', cat:'kerze', label:'Kerze',
     name:'Kerze Grün Rotblumen',
     tagline:'Grünes Glas, rote Blütenakzente',
-    desc:'Kontrastreiche Kombination: grünes Wachsgefäß, rote Blütendetails, erdiger Blumenduft. Eine Kerze mit Persönlichkeit – fällt auf.',
+    desc:'Kontrastreiche Kombination: grünes Gefäß, rote Blütendetails – handgegossen aus natürlichem Bienenwachs. Eine Kerze mit Persönlichkeit, die auffällt. Ca. 35 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-gruen-rotblumen.webp',
     variants:[
@@ -1058,8 +1093,8 @@ const PRODUCTS = [
   {
     id:'c5', cat:'kerze', label:'Kerze',
     name:'Kerze Orange Quadrat',
-    tagline:'Quadratische Form, warme Orangenote',
-    desc:'Die quadratische Form macht diese Kerze zum Eyecatcher. Warme Orangennote, handgegossen, ca. 40 Stunden Brenndauer dank mehr Wachs.',
+    tagline:'Quadratische Form, leuchtendes Gelwachs',
+    desc:'Dekoratives Gelwachs in leuchtendem Orange, quadratische Form – ein Eyecatcher mit Tiefe. Handgegossen, ca. 40 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-orange-quadrat.webp',
     variants:[
@@ -1069,8 +1104,8 @@ const PRODUCTS = [
   {
     id:'c6', cat:'kerze', label:'Kerze',
     name:'Kerze Bernstein Rund',
-    tagline:'Runde Form, warmes Bernstein, Holzduft',
-    desc:'Runde, gediegene Kerze in Bernsteinton mit warmem Holz- oder Vanille-Duft. Der Klassiker unter den Wohnkerzen – für alle, die es ruhig und behaglich mögen.',
+    tagline:'Runde Form, warmes Bernstein-Gelwachs',
+    desc:'Runde, gediegene Kerze aus dekorativem Gelwachs in Bernsteinton. Der Klassiker unter den Wohnkerzen – ruhig und behaglich. Ca. 40 Stunden Brenndauer.',
     icon:'🕯️', badge:'Bestseller', badgeType:'',
     image:'images/kerze-bernstein-rund.webp',
     variants:[
@@ -1080,8 +1115,8 @@ const PRODUCTS = [
   {
     id:'c7', cat:'kerze', label:'Kerze',
     name:'Kerze Zitrone Rund',
-    tagline:'Runde Form, frische Zitronennote',
-    desc:'Gelbes Wachs, runde Form, frischer Zitronenduft – leicht, belebend, mediterran. Der ideale Begleiter für Sommerabende auf der Terrasse.',
+    tagline:'Runde Form, gelbes Bienenwachs',
+    desc:'Gelbes Bienenwachs, runde Form mit Zitronen-Dekor – handgegossen aus natürlichem Wachs. Der ideale Begleiter für Sommerabende. Ca. 35 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-zitrone-rund.webp',
     variants:[
@@ -1092,7 +1127,7 @@ const PRODUCTS = [
     id:'c8', cat:'kerze', label:'Kerze',
     name:'Kerze Pink Quadrat',
     tagline:'Statement-Kerze in Pink, quadratisch',
-    desc:'Kräftiges Pink, quadratische Form – diese Kerze setzt ein klares Zeichen. Blumiger Duft, handgegossen, ca. 40 Stunden Brenndauer. Das ideale Geschenk wenn man auffallen möchte.',
+    desc:'Kräftiges Pink, quadratische Form – handgegossen aus natürlichem Bienenwachs. Setzt ein klares Zeichen. Ca. 40 Stunden Brenndauer.',
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-pink-quadrat.webp',
     variants:[
@@ -1103,11 +1138,11 @@ const PRODUCTS = [
     id:'c9', cat:'kerze', label:'Kerze',
     name:'Kerze Pink Herz',
     tagline:'Herzform, romantisch, besonders',
-    desc:'Eine Kerze in Herzform – rosa, weich, romantisch. Perfekt als Geschenk zum Valentinstag, Muttertag oder einfach so. Handgegossen, ca. 20 Stunden Brenndauer.',
+    desc:'Eine Kerze in Herzform aus natürlichem Bienenwachs – rosa, weich, romantisch. Perfekt als Geschenk zum Valentinstag, Muttertag oder einfach so. Ca. 20 Stunden Brenndauer.',
     icon:'🕯️', badge:'Geschenk', badgeType:'custom',
     image:'images/kerze-pink-herz.webp',
     variants:[
-      {name:'Standard (ca. 20h)', price:25},
+      {name:'Standard (ca. 20h)', price:29},
     ]
   },
 ];
@@ -1164,7 +1199,7 @@ function renderShop(){
       <div class="product-info">
         <span class="product-cat">${p.label}</span>
         <div class="product-name">${p.name}</div>
-        <div class="product-price">ab ${minPrice} €</div>
+        <div class="product-price">${(p.cat==='windlicht'||p.cat==='kerze')?'':'ab '}${minPrice} €</div>
       </div>
     </div>`;
   }).join('');
@@ -1212,6 +1247,7 @@ window.addEventListener('popstate', function(){
   else if(document.getElementById('checkoutModal').classList.contains('open')) closeCheckout();
   else if(document.getElementById('impressumModal').classList.contains('open')) closeLegal('impressumModal');
   else if(document.getElementById('datenschutzModal').classList.contains('open')) closeLegal('datenschutzModal');
+  else if(document.getElementById('agbModal').classList.contains('open')) closeLegal('agbModal');
 });
 
 function openLegal(id){
@@ -1522,7 +1558,7 @@ function toggleMobileMenu(){
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){
     closeModal(); closeCart(); closeCheckout(); closeSuccess();
-    closeLegal('impressumModal'); closeLegal('datenschutzModal');
+    closeLegal('impressumModal'); closeLegal('datenschutzModal'); closeLegal('agbModal');
   }
 });
 
