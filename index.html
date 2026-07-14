@@ -162,6 +162,18 @@ section{padding:100px 60px;}
 .testimonial-stars{color:#c4a96a;font-size:13px;letter-spacing:3px;margin-bottom:20px;}
 .testimonial blockquote{font-family:'Cormorant Garamond',serif;font-size:17px;font-style:italic;color:rgba(240,232,208,0.7);line-height:1.6;margin-bottom:20px;font-weight:300;}
 .testimonial-author{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8a8060;font-weight:600;}
+.review-box{max-width:520px;margin:48px auto 0;background:#111;border:1px solid rgba(138,128,96,0.2);padding:36px 32px;text-align:center;}
+.review-box h3{font-family:'Playfair Display',serif;font-size:21px;font-weight:400;color:#fff;margin-bottom:6px;}
+.review-box .review-sub{font-size:12px;color:rgba(240,232,208,0.4);margin-bottom:20px;font-weight:300;}
+.star-input{font-size:30px;color:rgba(240,232,208,0.18);margin-bottom:20px;cursor:pointer;user-select:none;line-height:1;}
+.star-input span{transition:color .12s;padding:0 3px;}
+.star-input span.on{color:#c4a96a;}
+.review-box input,.review-box textarea{width:100%;background:#0d0d0d;border:1px solid rgba(240,232,208,0.1);color:#f0e8d0;padding:12px 14px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:300;outline:none;margin-bottom:12px;transition:border-color .2s;}
+.review-box input:focus,.review-box textarea:focus{border-color:#8a8060;}
+.review-box textarea{min-height:90px;resize:vertical;}
+.review-btn{background:#8a8060;color:#fff;padding:13px 34px;font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:600;cursor:pointer;border:none;font-family:'Montserrat',sans-serif;transition:background .2s;}
+.review-btn:hover{background:#c4a96a;}
+.review-hint{font-size:10px;color:rgba(240,232,208,0.3);margin-top:14px;font-style:italic;}
 
 /* ── CONTACT ── */
 .contact{background:#111;}
@@ -518,28 +530,26 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
   </div>
 </div>
 
-<!-- TESTIMONIALS -->
+<!-- FRISCH GESTARTET -->
 <div class="testimonials">
   <div class="testimonials-header">
-    <span class="section-tag">Kundenstimmen</span>
-    <div class="section-rule" style="margin:0 auto;"></div>
+    <span class="section-tag">Frisch aus der Werkstatt</span>
+    <div class="section-rule" style="margin:0 auto 22px;"></div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:34px;font-weight:400;color:#fff;line-height:1.1;">Sei unter den <em style="font-style:italic;color:#c4a96a;">Ersten</em></h2>
   </div>
-  <div class="testimonials-grid">
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <blockquote>„Das Windlicht mit unseren Hochzeitsdaten ist einfach perfekt. Jedes Mal wenn wir es anzünden, denken wir an diesen Abend."</blockquote>
-      <div class="testimonial-author">Sarah & Markus, Frankfurt</div>
+  <p style="text-align:center;max-width:580px;margin:0 auto;font-size:14px;color:rgba(240,232,208,0.5);line-height:1.9;font-weight:300;">Flaconella ist gerade gestartet. Jedes Stück entsteht in Handarbeit aus Flaschen unseres Café-Bars am Marktplatz Dieburg – kein Lager, keine Massenware. Bestell dein Lieblingsstück und werde Teil der allerersten Kollektion.</p>
+  <div style="text-align:center;margin-top:34px;"><a href="#shop" class="btn-primary">Zum Shop</a></div>
+
+  <div class="review-box">
+    <h3>Schon ein Stück zu Hause?</h3>
+    <div class="review-sub">Erzähl uns, wie es dir gefällt – wir freuen uns über jede Bewertung.</div>
+    <div class="star-input" id="starInput">
+      <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
     </div>
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <blockquote>„Haben Flaconella als Tischdeko für unser Restaurant genommen. Gäste fragen ständig danach – beste Werbung überhaupt."</blockquote>
-      <div class="testimonial-author">Restaurant Perla, Darmstadt</div>
-    </div>
-    <div class="testimonial">
-      <div class="testimonial-stars">★★★★★</div>
-      <blockquote>„Die Lampe ist das Gesprächsstück in meiner Wohnung. Toll zu wissen, dass die Flasche vorher in einem echten Café stand."</blockquote>
-      <div class="testimonial-author">Thomas K., Dieburg</div>
-    </div>
+    <input type="text" id="rev-name" placeholder="Dein Name (z. B. Maria M.)">
+    <textarea id="rev-text" placeholder="Deine Bewertung"></textarea>
+    <button class="review-btn" onclick="submitReview()">Bewertung senden</button>
+    <div class="review-hint">Nach kurzer Prüfung veröffentlichen wir deine Bewertung hier.</div>
   </div>
 </div>
 
@@ -1562,9 +1572,36 @@ document.addEventListener('keydown', e=>{
   }
 });
 
+// ── REZENSIONEN ──
+let reviewStars = 5;
+function initStars(){
+  const box = document.getElementById('starInput');
+  if(!box) return;
+  const spans = box.querySelectorAll('span');
+  const paint = n => spans.forEach(s => s.classList.toggle('on', +s.dataset.v <= n));
+  paint(reviewStars);
+  spans.forEach(s => {
+    s.addEventListener('click', () => { reviewStars = +s.dataset.v; paint(reviewStars); });
+    s.addEventListener('mouseenter', () => paint(+s.dataset.v));
+  });
+  box.addEventListener('mouseleave', () => paint(reviewStars));
+}
+function submitReview(){
+  const name = document.getElementById('rev-name').value.trim();
+  const text = document.getElementById('rev-text').value.trim();
+  if(!text){ alert('Bitte schreib ein paar Worte zu deiner Bewertung.'); return; }
+  const stars = '★'.repeat(reviewStars) + '☆'.repeat(5 - reviewStars);
+  const body = `Neue Bewertung%0A%0ABewertung: ${stars} (${reviewStars}/5)%0AName: ${name || '(ohne Namen)'}%0A%0A${text}`;
+  window.location.href = `mailto:hallo@flaconella.de?subject=Neue Bewertung von ${name || 'Kunde'}&body=${body}`;
+  showToast('Danke! Deine Bewertung ist unterwegs.');
+  document.getElementById('rev-name').value = '';
+  document.getElementById('rev-text').value = '';
+}
+
 // ── INIT ──
 renderShop();
 updateCartUI();
+initStars();
 </script>
 </body>
 </html>
