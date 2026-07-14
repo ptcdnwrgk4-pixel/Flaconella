@@ -300,11 +300,22 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 .checkout-note{font-size:10px;color:rgba(240,232,208,0.2);text-align:center;line-height:1.6;}
 
 /* ── SUCCESS MODAL ── */
-.success-modal{background:#111;max-width:480px;width:100%;padding:60px 48px;text-align:center;border:1px solid rgba(138,128,96,0.15);position:relative;}
+.success-modal{background:#111;max-width:480px;width:100%;padding:52px 44px;text-align:center;border:1px solid rgba(138,128,96,0.15);position:relative;max-height:88vh;overflow-y:auto;}
 .success-icon{font-size:56px;margin-bottom:24px;}
 .success-modal h3{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;margin-bottom:12px;}
 .success-modal p{font-size:13px;color:rgba(240,232,208,0.45);line-height:1.7;font-weight:300;margin-bottom:32px;}
 .success-modal .btn-primary{display:inline-block;}
+.pay-box{text-align:left;background:#0d0d0d;border:1px solid rgba(138,128,96,0.2);padding:20px;margin-bottom:28px;}
+.pay-total{font-family:'Cormorant Garamond',serif;font-size:22px;color:#c4a96a;margin-bottom:16px;text-align:center;font-weight:400;}
+.pay-method{padding:14px 0;border-top:1px solid rgba(240,232,208,0.07);}
+.pay-method:first-of-type{border-top:none;padding-top:0;}
+.pay-method-title{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8a8060;font-weight:600;margin-bottom:8px;}
+.pay-method-body{font-size:12px;color:rgba(240,232,208,0.7);line-height:1.75;}
+.pay-method-body strong{color:#f0e8d0;font-weight:600;}
+.pay-iban{font-family:'Courier New',monospace;font-size:13px;color:#f0e8d0;letter-spacing:1px;}
+.pay-paypal-btn{display:inline-block;background:#8a8060;color:#fff;padding:10px 22px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:600;text-decoration:none;margin-top:4px;transition:background .2s;}
+.pay-paypal-btn:hover{background:#c4a96a;}
+.pay-soon{font-size:11px;color:rgba(240,232,208,0.35);font-style:italic;}
 
 /* ── TOAST ── */
 .toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:#1a1a1a;border:1px solid rgba(196,169,106,0.3);color:#f0e8d0;padding:14px 28px;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:600;z-index:500;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
@@ -733,7 +744,7 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
       </div>
       <div class="checkout-payment-info">
         <h4>Zahlung & Versand</h4>
-        <p>Wir senden dir eine Bestätigung mit Zahlungsinformationen per E-Mail. Zahlung per <strong>Überweisung oder PayPal</strong>. Versand innerhalb von 3–5 Werktagen nach Zahlungseingang. Abholung im Padella Vino (Mo–Sa) möglich.</p>
+        <p>Nach dem Bestellen werden dir die Zahlungsdaten (<strong>Überweisung oder PayPal</strong>) direkt angezeigt. Versand innerhalb von 3–5 Werktagen nach Zahlungseingang. Abholung im Padella Vino (Mo–Sa) möglich.</p>
       </div>
       <button type="submit" class="checkout-submit">Verbindlich bestellen</button>
       <p class="checkout-note">Mit der Bestellung stimmst du unseren AGB und der Datenschutzerklärung zu. Du erhältst eine Bestätigung per E-Mail.</p>
@@ -747,7 +758,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
     <button class="modal-close" onclick="closeSuccess()">✕</button>
     <div class="success-icon">🍾</div>
     <h3>Bestellung eingegangen!</h3>
-    <p>Danke für deine Bestellung. Wir melden uns innerhalb von 24 Stunden mit deiner Bestätigung und den Zahlungsdetails per E-Mail.</p>
+    <p>Danke für deine Bestellung! Bitte schick die geöffnete E-Mail noch ab, damit sie bei uns eingeht. So kannst du bezahlen:</p>
+    <div id="successPayment"></div>
     <button class="btn-primary" onclick="closeSuccess()">Weiter einkaufen</button>
   </div>
 </div>
@@ -815,6 +827,11 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 <div class="toast" id="toast"><span>✓</span> <span id="toastMsg">In den Warenkorb gelegt</span></div>
 
 <script>
+// ── ZAHLUNGS-KONFIGURATION ──
+const PAY_HOLDER = 'Sonja Peters';
+const PAY_IBAN = 'DE16 5105 0015 0997 0046 84';
+const PAYPAL_LINK = ''; // z.B. 'https://paypal.me/flaconella' – sobald das PayPal-Konto steht hier eintragen
+
 // ── PRODUCT DATA ──
 const PRODUCTS = [
   // ── WINDLICHTER ──
@@ -840,8 +857,7 @@ const PRODUCTS = [
     image:'images/schwarze_flasche_windlicht_blumen_01.webp',
     gallery:['images/schwarze_flasche_windlicht_blumen_01.webp','images/schwarze_flasche_windlicht_blumen_02.webp','images/schwarze_flasche_windlicht_blumen_03.webp'],
     variants:[
-      {name:'Standard', price:29},
-      {name:'Mit Blütenmotiv', price:39},
+      {name:'Standard', price:39},
     ]
   },
   {
@@ -853,7 +869,7 @@ const PRODUCTS = [
     image:'images/braunes_glas_windlicht_gravur_01.webp',
     gallery:['images/braunes_glas_windlicht_gravur_01.webp','images/braunes_glas_windlicht_gravur_02.webp'],
     variants:[
-      {name:'Standardmotiv', price:26},
+      {name:'Standard', price:39},
     ]
   },
 
@@ -866,8 +882,8 @@ const PRODUCTS = [
     icon:'🍷', badge:'Set', badgeType:'',
     image:'images/kerzenhalter_set_3er_02.webp',
     variants:[
-      {name:'Einzel', price:29},
-      {name:'3er-Set standard', price:85},
+      {name:'Einzel', price:39},
+      {name:'3er-Set standard', price:109},
     ]
   },
 
@@ -880,10 +896,12 @@ const PRODUCTS = [
     icon:'💡', badge:'Bestseller', badgeType:'',
     image:'images/lampe-bulgarini-classic.webp',
     gallery:['images/lampe-bulgarini-classic.webp','images/lampe-bulgarini-blueten.webp'],
+    option:{label:'Ausführung', choices:['Klassische Gravur','Blütenrelief']},
     variants:[
-      {name:'Klassisch graviert (USB)', price:29},
-      {name:'Klassisch graviert (Solar)', price:34},
-      {name:'Blütenrelief (USB)', price:38},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -894,9 +912,12 @@ const PRODUCTS = [
     icon:'💡', badge:'Neu', badgeType:'',
     image:'images/lampe-hexagonal.webp',
     gallery:['images/lampe-hexagonal.webp','images/lampe-hexagonal-stimmung.webp','images/lampe-eckig-botanik.webp'],
+    option:{label:'Glas', choices:['Klarglas','Bernsteinglas']},
     variants:[
-      {name:'Klarglas (USB)', price:44},
-      {name:'Bernsteinglas (USB)', price:44},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -907,7 +928,10 @@ const PRODUCTS = [
     icon:'💡', badge:'', badgeType:'',
     image:'images/lampe-pusteblume.webp',
     variants:[
-      {name:'Standard (USB)', price:38},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -918,7 +942,10 @@ const PRODUCTS = [
     icon:'💡', badge:'', badgeType:'',
     image:'images/lampe-ramazotti.webp',
     variants:[
-      {name:'Standard (USB)', price:35},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -929,10 +956,13 @@ const PRODUCTS = [
     icon:'💡', badge:'', badgeType:'',
     image:'images/lampe-weinflasche.webp',
     gallery:['images/lampe-weinflasche.webp','images/lampe-weinflasche-klar.webp','images/lampe-rotwein.webp','images/weinflasche-duo.webp'],
+    option:{label:'Ausführung', choices:['Hell (klar)','Dunkel (olivgrün)']},
     variants:[
-      {name:'Hell (klar)', price:32},
-      {name:'Dunkel (olivgrün)', price:32},
-      {name:'Duo-Bundle (hell + dunkel)', price:50},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
+      {name:'Duo-Set (2 Flaschen)', price:50},
     ]
   },
 
@@ -945,7 +975,10 @@ const PRODUCTS = [
     icon:'🌿', badge:'', badgeType:'',
     image:'images/dekoflasche-botanik.webp',
     variants:[
-      {name:'Standard', price:38},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -956,7 +989,10 @@ const PRODUCTS = [
     icon:'🌿', badge:'', badgeType:'',
     image:'images/dekoflasche-geriffelt.webp',
     variants:[
-      {name:'Standard', price:36},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
   {
@@ -967,7 +1003,10 @@ const PRODUCTS = [
     icon:'🌿', badge:'Kultig', badgeType:'',
     image:'images/dekoflasche-aperol.webp',
     variants:[
-      {name:'Standard', price:34},
+      {name:'Mit Korken', price:25},
+      {name:'Mit Dekokorken', price:29},
+      {name:'Mit Lichterkette', price:35},
+      {name:'Mit Lampenschirm', price:39},
     ]
   },
 
@@ -980,7 +1019,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'Neu', badgeType:'',
     image:'images/kerze-zitrus-gruen.webp',
     variants:[
-      {name:'Standard (ca. 35h)', price:18},
+      {name:'Standard (ca. 35h)', price:25},
     ]
   },
   {
@@ -991,7 +1030,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-rosa-blume.webp',
     variants:[
-      {name:'Standard (ca. 35h)', price:18},
+      {name:'Standard (ca. 35h)', price:25},
     ]
   },
   {
@@ -1002,7 +1041,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-gelb-blume.webp',
     variants:[
-      {name:'Standard (ca. 35h)', price:18},
+      {name:'Standard (ca. 35h)', price:25},
     ]
   },
   {
@@ -1013,7 +1052,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-gruen-rotblumen.webp',
     variants:[
-      {name:'Standard (ca. 35h)', price:20},
+      {name:'Standard (ca. 35h)', price:25},
     ]
   },
   {
@@ -1024,7 +1063,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-orange-quadrat.webp',
     variants:[
-      {name:'Standard (ca. 40h)', price:22},
+      {name:'Standard (ca. 40h)', price:29},
     ]
   },
   {
@@ -1035,7 +1074,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'Bestseller', badgeType:'',
     image:'images/kerze-bernstein-rund.webp',
     variants:[
-      {name:'Standard (ca. 40h)', price:20},
+      {name:'Standard (ca. 40h)', price:29},
     ]
   },
   {
@@ -1046,7 +1085,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-zitrone-rund.webp',
     variants:[
-      {name:'Standard (ca. 35h)', price:18},
+      {name:'Standard (ca. 35h)', price:25},
     ]
   },
   {
@@ -1057,7 +1096,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'', badgeType:'',
     image:'images/kerze-pink-quadrat.webp',
     variants:[
-      {name:'Standard (ca. 40h)', price:22},
+      {name:'Standard (ca. 40h)', price:29},
     ]
   },
   {
@@ -1068,7 +1107,7 @@ const PRODUCTS = [
     icon:'🕯️', badge:'Geschenk', badgeType:'custom',
     image:'images/kerze-pink-herz.webp',
     variants:[
-      {name:'Standard (ca. 20h)', price:18},
+      {name:'Standard (ca. 20h)', price:25},
     ]
   },
 ];
@@ -1077,6 +1116,7 @@ const PRODUCTS = [
 let cart = JSON.parse(localStorage.getItem('flaconella_cart') || '[]');
 let currentProduct = null;
 let selectedVariantIdx = 0;
+let selectedOption = 0;
 
 // ── RENDER SHOP ──
 // Returns image src: preloaded static element (bundled) or file path (hosted)
@@ -1160,6 +1200,7 @@ function openProduct(id){
   currentProduct = PRODUCTS.find(p=>p.id===id);
   if(!currentProduct) return;
   selectedVariantIdx = 0;
+  selectedOption = 0;
   renderModal();
   document.getElementById('productModal').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1228,7 +1269,18 @@ function renderModal(){
     ${getUsageTip(p) ? `<p class="modal-tip">${getUsageTip(p)}</p>` : ''}
     ${getNote(p) ? `<p class="modal-note">${getNote(p)}</p>` : ''}
     <div class="modal-divider"></div>
-    <div class="modal-option-label">Variante wählen</div>
+    ${p.option ? `
+      <div class="modal-option-label">${p.option.label} wählen</div>
+      <div class="variant-selector">
+        ${p.option.choices.map((c,i)=>`
+          <label class="variant-option opt-option ${i===0?'selected':''}">
+            <input type="radio" name="prodoption" value="${i}" ${i===0?'checked':''} onchange="selectOption(${i})">
+            <span class="variant-option-name">${c}</span>
+          </label>
+        `).join('')}
+      </div>
+    ` : ''}
+    <div class="modal-option-label">${p.option ? 'Ausstattung' : 'Variante'} wählen</div>
     <div class="variant-selector">
       ${p.variants.map((v,i)=>`
         <label class="variant-option ${i===0?'selected':''}">
@@ -1238,12 +1290,6 @@ function renderModal(){
         </label>
       `).join('')}
     </div>
-    ${hasEngrave ? `
-      <div class="engraving-field" id="engravingField" style="display:${p.variants[0].hasEngraving?'flex':'none'}">
-        <div class="modal-option-label">Gravurtext (optional)</div>
-        <input type="text" id="engravingText" placeholder="z.B. Maria & Thomas · 14.06.2026" maxlength="60">
-      </div>
-    ` : ''}
     <button class="modal-add-btn" onclick="addToCart()">In den Warenkorb</button>
   `;
 }
@@ -1252,9 +1298,12 @@ function selectVariant(idx){
   selectedVariantIdx = idx;
   const v = currentProduct.variants[idx];
   document.getElementById('modalPrice').textContent = v.price + ' €';
-  document.querySelectorAll('.variant-option').forEach((el,i)=>el.classList.toggle('selected',i===idx));
-  const ef = document.getElementById('engravingField');
-  if(ef) ef.style.display = v.hasEngraving ? 'flex' : 'none';
+  document.querySelectorAll('.variant-option:not(.opt-option)').forEach((el,i)=>el.classList.toggle('selected',i===idx));
+}
+
+function selectOption(idx){
+  selectedOption = idx;
+  document.querySelectorAll('.opt-option').forEach((el,i)=>el.classList.toggle('selected',i===idx));
 }
 
 function closeModal(){
@@ -1267,25 +1316,24 @@ function closeModal(){
 function quickAdd(id){
   const p = PRODUCTS.find(x=>x.id===id);
   if(!p) return;
-  addItemToCart(p, 0, '');
+  addItemToCart(p, 0, p.option ? p.option.choices[0] : '');
 }
 
 // ── ADD TO CART ──
 function addToCart(){
-  const engrText = document.getElementById('engravingText');
-  const engraving = engrText ? engrText.value.trim() : '';
-  addItemToCart(currentProduct, selectedVariantIdx, engraving);
+  const option = currentProduct.option ? currentProduct.option.choices[selectedOption] : '';
+  addItemToCart(currentProduct, selectedVariantIdx, option);
   closeModal();
 }
 
-function addItemToCart(product, variantIdx, engraving){
+function addItemToCart(product, variantIdx, option){
   const variant = product.variants[variantIdx];
-  const key = product.id + '_' + variantIdx + '_' + engraving;
+  const key = product.id + '_' + variantIdx + '_' + option;
   const existing = cart.find(i=>i.key===key);
   if(existing){
     existing.qty++;
   } else {
-    cart.push({key, productId:product.id, variantIdx, engraving, qty:1,
+    cart.push({key, productId:product.id, variantIdx, option, qty:1,
       name:product.name, variant:variant.name, price:variant.price, icon:product.icon});
   }
   saveCart();
@@ -1318,7 +1366,7 @@ function updateCartUI(){
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-variant">${item.variant}</div>
-        ${item.engraving ? `<div class="cart-item-engraving">Gravur: "${item.engraving}"</div>` : ''}
+        ${item.option ? `<div class="cart-item-engraving">${item.option}</div>` : ''}
         <div class="cart-item-price">${(item.price*item.qty).toFixed(2).replace('.',',')} €</div>
         <div class="cart-item-qty">
           <button class="qty-btn" onclick="changeQty('${item.key}',-1)">−</button>
@@ -1362,7 +1410,7 @@ function openCheckout(){
   const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
   const summaryLines = cart.map(i=>`
     <div class="checkout-order-line">
-      <span>${i.qty}× ${i.name} – ${i.variant}${i.engraving?' (Gravur: "'+i.engraving+'"':''}</span>
+      <span>${i.qty}× ${i.name} – ${i.variant}${i.option?' · '+i.option:''}</span>
       <span>${(i.price*i.qty).toFixed(2).replace('.',',')} €</span>
     </div>
   `).join('');
@@ -1392,14 +1440,42 @@ function submitOrder(e){
   const city = document.getElementById('co-city').value;
   const note = document.getElementById('co-note').value;
   const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const orderLines = cart.map(i=>`${i.qty}x ${i.name} (${i.variant})${i.engraving?' [Gravur: '+i.engraving+']':''}: ${(i.price*i.qty).toFixed(2)}€`).join('%0A');
+  const orderLines = cart.map(i=>`${i.qty}x ${i.name} (${i.variant})${i.option?' – '+i.option:''}: ${(i.price*i.qty).toFixed(2)}€`).join('%0A');
   const body = `Bestellung von ${fname} ${lname}%0AE-Mail: ${email}%0ATelefon: ${phone}%0A%0ALieferadresse:%0A${street}%0A${zip} ${city}%0A%0ABestellung:%0A${orderLines}%0A%0AGesamtbetrag: ${total.toFixed(2)}€%0A%0AAnmerkungen:%0A${note}`;
   window.location.href = `mailto:hallo@flaconella.de?subject=Bestellung von ${fname} ${lname}&body=${body}`;
+  renderPayment(total, `${fname} ${lname}`);
   closeCheckout();
   cart = [];
   saveCart();
   updateCartUI();
   setTimeout(()=>{ document.getElementById('successModal').classList.add('open'); },400);
+}
+
+function renderPayment(total, custName){
+  const totalStr = total.toFixed(2).replace('.',',');
+  let paypal;
+  if(PAYPAL_LINK){
+    paypal = `<a class="pay-paypal-btn" href="${PAYPAL_LINK}/${total.toFixed(2)}EUR" target="_blank" rel="noopener">Mit PayPal zahlen</a>`;
+  } else {
+    paypal = `<span class="pay-soon">PayPal-Zahlung folgt in Kürze.</span>`;
+  }
+  document.getElementById('successPayment').innerHTML = `
+    <div class="pay-box">
+      <div class="pay-total">Zu zahlen: ${totalStr} €</div>
+      <div class="pay-method">
+        <div class="pay-method-title">Überweisung</div>
+        <div class="pay-method-body">
+          <strong>${PAY_HOLDER}</strong><br>
+          <span class="pay-iban">${PAY_IBAN}</span><br>
+          Verwendungszweck: Flaconella – ${custName}<br>
+          Betrag: <strong>${totalStr} €</strong>
+        </div>
+      </div>
+      <div class="pay-method">
+        <div class="pay-method-title">PayPal</div>
+        <div class="pay-method-body">${paypal}</div>
+      </div>
+    </div>`;
 }
 
 function closeSuccess(){
