@@ -247,7 +247,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 .cart-empty-icon{font-size:48px;opacity:0.15;}
 .cart-empty p{font-size:12px;color:rgba(240,232,208,0.3);letter-spacing:2px;text-transform:uppercase;font-weight:600;}
 .cart-item{display:flex;gap:16px;align-items:flex-start;padding-bottom:20px;border-bottom:1px solid rgba(240,232,208,0.06);}
-.cart-item-img{width:70px;height:70px;background:#0d0d0d;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;}
+.cart-item-img{width:70px;height:70px;background:#f2eee6;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:28px;overflow:hidden;}
+.cart-item-img img{width:100%;height:100%;object-fit:contain;}
 .cart-item-info{flex:1;}
 .cart-item-name{font-family:'Playfair Display',serif;font-size:14px;color:#fff;margin-bottom:4px;}
 .cart-item-variant{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#8a8060;margin-bottom:8px;font-weight:600;}
@@ -1438,8 +1439,8 @@ function updateCartUI(){
     return;
   }
   container.innerHTML = cart.map(item=>`
-    <div class="cart-item">
-      <div class="cart-item-img">${item.icon}</div>
+    <div class="cart-item" data-key="${item.key}">
+      <div class="cart-item-img">${PRODUCTS.find(p=>p.id===item.productId && p.image) ? '<img alt="">' : item.icon}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-variant">${item.variant}</div>
@@ -1454,6 +1455,12 @@ function updateCartUI(){
       <button class="cart-item-remove" onclick="removeItem('${item.key}')">✕</button>
     </div>
   `).join('');
+  cart.forEach(item => {
+    const p = PRODUCTS.find(x=>x.id===item.productId);
+    if(!p || !p.image) return;
+    const el = container.querySelector(`[data-key="${CSS.escape(item.key)}"] .cart-item-img img`);
+    if(el) el.src = getImgSrc(p);
+  });
 }
 
 function changeQty(key, delta){
