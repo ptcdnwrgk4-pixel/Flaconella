@@ -408,6 +408,15 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 .checkout-or::before,.checkout-or::after{content:'';flex:1;height:1px;background:rgba(240,232,208,0.1);}
 .modal-express-btn{width:100%;margin-top:10px;text-align:center;}
 .modal-express-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.paypal-preview{background:#ffc439;color:#003087;padding:10px 14px;border-radius:3px;text-align:center;}
+.paypal-preview span{display:block;font-weight:700;font-size:14px;font-family:Arial,sans-serif;}
+.paypal-preview small{display:block;font-size:9px;line-height:1.4;margin-top:4px;color:#2c2e2f;font-weight:400;}
+.mail-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:4px 0 10px;}
+.copy-btn{background:none;border:1px solid rgba(240,232,208,0.2);color:rgba(240,232,208,0.6);padding:10px 16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;transition:all .2s;}
+.copy-btn:hover{border-color:#8a8060;color:#c4a96a;}
+.order-details summary{font-size:10px;color:rgba(240,232,208,0.35);cursor:pointer;letter-spacing:1px;}
+.order-details pre{white-space:pre-wrap;font-family:'Courier New',monospace;font-size:11px;color:rgba(240,232,208,0.6);background:#111;padding:12px;margin-top:8px;line-height:1.5;max-height:200px;overflow:auto;}
+.pay-method:first-of-type{border-top:none;padding-top:0;}
 
 /* ── SUCCESS MODAL ── */
 .success-modal{background:#111;max-width:480px;width:100%;padding:52px 44px;text-align:center;border:1px solid rgba(138,128,96,0.15);position:relative;max-height:88vh;overflow-y:auto;box-shadow:0 40px 100px rgba(0,0,0,0.6);}
@@ -881,10 +890,6 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
           <label>Ort *</label>
           <input type="text" id="co-city" required placeholder="Dieburg">
         </div>
-      </div>
-      <div class="form-group">
-        <label>Anmerkungen</label>
-        <textarea id="co-note" placeholder="Besondere Wünsche, ..." style="min-height:80px;background:#0d0d0d;border:1px solid rgba(240,232,208,0.1);color:#f0e8d0;padding:12px 14px;font-family:Montserrat,sans-serif;font-size:12px;outline:none;width:100%;resize:vertical;"></textarea>
       </div>
       <div class="checkout-payment-info">
         <h4>Zahlung & Versand</h4>
@@ -1917,6 +1922,46 @@ function mailtoLink(subject, body){
   return 'mailto:hallo@flaconella.de?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
 }
 
+// Mail-Programm über einen echten Link-Klick öffnen – die Seite selbst bleibt stehen.
+let lastOrderText = '';
+function openMail(link){
+  const a = document.createElement('a');
+  a.href = link; a.target = '_blank'; a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => a.remove(), 0);
+}
+
+function copyOrderText(){
+  if(!lastOrderText) return;
+  const done = () => showToast('Bestelltext kopiert');
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(lastOrderText).then(done, () => fallbackCopy(done));
+  } else fallbackCopy(done);
+}
+function fallbackCopy(done){
+  const ta = document.createElement('textarea');
+  ta.value = lastOrderText; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.select();
+  try { document.execCommand('copy'); done(); } catch(e) {}
+  ta.remove();
+}
+
+// Block im Erfolgsfenster: Mail senden + Bestelltext kopieren
+function mailBlock(link, label){
+  return `
+    <div class="pay-method">
+      <div class="pay-method-title">${label}</div>
+      <div class="pay-method-body">
+        <div class="mail-actions">
+          <a class="pay-paypal-btn" href="${link}" target="_blank" rel="noopener">Bestellung per E-Mail senden</a>
+          <button type="button" class="copy-btn" onclick="copyOrderText()">Bestelltext kopieren</button>
+        </div>
+        <details class="order-details"><summary>Bestelltext anzeigen</summary><pre id="orderText"></pre></details>
+      </div>
+    </div>`;
+}
+
 function submitOrder(e){
   e.preventDefault();
   const fname = document.getElementById('co-fname').value;
@@ -1926,22 +1971,26 @@ function submitOrder(e){
   const street = document.getElementById('co-street').value;
   const zip = document.getElementById('co-zip').value;
   const city = document.getElementById('co-city').value;
-  const note = document.getElementById('co-note').value;
   const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
-  const body = `Bestellung von ${fname} ${lname}\nE-Mail: ${email}\nTelefon: ${phone}\n\nLieferadresse:\n${street}\n${zip} ${city}\n\nBestellung:\n${orderLinesText()}\n\nGesamtbetrag: ${total.toFixed(2)}€\n\nAnmerkungen:\n${note}`;
-  window.location.href = mailtoLink(`Bestellung von ${fname} ${lname}`, body);
-  document.getElementById('successTitle').textContent = 'Bestellung eingegangen!';
-  document.getElementById('successText').textContent = 'Danke für deine Bestellung! Bitte schick die geöffnete E-Mail noch ab, damit sie bei uns eingeht. So kannst du bezahlen:';
-  renderPayment(total, `${fname} ${lname}`);
+  const body = `Bestellung von ${fname} ${lname}\nE-Mail: ${email}\nTelefon: ${phone}\n\nLieferadresse:\n${street}\n${zip} ${city}\n\nBestellung:\n${orderLinesText()}\n\nGesamtbetrag: ${total.toFixed(2)}€`;
+  lastOrderText = `An: hallo@flaconella.de\nBetreff: Bestellung von ${fname} ${lname}\n\n${body}`;
+  const link = mailtoLink(`Bestellung von ${fname} ${lname}`, body);
+  document.getElementById('successTitle').textContent = 'Fast geschafft!';
+  document.getElementById('successText').textContent = 'Damit deine Bestellung bei uns ankommt, schick sie bitte per E-Mail ab – der Button öffnet dein Mail-Programm mit allen Daten. Danach kannst du so bezahlen:';
+  renderPayment(total, `${fname} ${lname}`, link);
+  document.getElementById('orderText').textContent = lastOrderText;
   closeCheckout();
   cart = [];
   saveCart();
   updateCartUI();
-  setTimeout(()=>{ document.getElementById('successModal').classList.add('open'); },400);
+  document.getElementById('successModal').classList.add('open');
+  document.body.style.overflow='hidden';
+  openMail(link);
 }
 
 // ── PAYPAL EXPRESS-CHECKOUT ──
 let paypalLoaded = false;
+let paypalPreview = false;
 const paypalRendered = {};
 
 function initPayPal(){
@@ -1950,12 +1999,23 @@ function initPayPal(){
   sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PAYPAL_CLIENT_ID)
     + '&currency=EUR&locale=de_DE&intent=capture&components=buttons&disable-funding=credit,paylater';
   sc.onload = () => { paypalLoaded = true; renderPayPalButton('paypalCart'); updateExpressVisibility(); };
-  sc.onerror = () => { paypalLoaded = false; updateExpressVisibility(); };
+  sc.onerror = () => {
+    paypalLoaded = false;
+    if(PAYPAL_CLIENT_ID === 'sb'){
+      // Vorschau-Umgebungen blocken externe Skripte – im Testmodus trotzdem zeigen, wo der Button sitzt
+      paypalPreview = true;
+      ['paypalCart','paypalCheckout'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.innerHTML = '<div class="paypal-preview"><span>PayPal Express-Checkout</span><small>Vorschau – das PayPal-Skript kann in dieser Umgebung nicht geladen werden. Auf der echten Seite erscheint hier der PayPal-Button.</small></div>';
+      });
+    }
+    updateExpressVisibility();
+  };
   document.head.appendChild(sc);
 }
 
 function updateExpressVisibility(){
-  const show = paypalLoaded && cart.length > 0;
+  const show = (paypalLoaded || paypalPreview) && cart.length > 0;
   ['expressCart','expressCheckout','checkoutOr'].forEach(id => {
     const el = document.getElementById(id);
     if(el) el.hidden = !show;
@@ -2010,39 +2070,36 @@ function finishPayPalOrder(details){
   const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
   const addrLines = [addr.address_line_1, addr.address_line_2, `${addr.postal_code || ''} ${addr.admin_area_2 || ''}`.trim(), addr.country_code].filter(Boolean).join('\n');
   const body = `PayPal-Bestellung von ${custName}\nPayPal-Bestellnummer: ${details.id}\nE-Mail: ${email}\n\nLieferadresse (aus PayPal):\n${addrLines}\n\nBestellung:\n${orderLinesText()}\n\nGesamtbetrag: ${total.toFixed(2)}€ – bezahlt via PayPal`;
+  lastOrderText = `An: hallo@flaconella.de\nBetreff: PayPal-Bestellung ${details.id} von ${custName}\n\n${body}`;
   const link = mailtoLink(`PayPal-Bestellung ${details.id} von ${custName}`, body);
   closeCheckout();
   closeCart();
   document.getElementById('successTitle').textContent = 'Bezahlt – danke!';
-  document.getElementById('successText').innerHTML = `Deine PayPal-Zahlung ist eingegangen (Bestellnummer <strong>${details.id}</strong>). Wir versenden innerhalb von 3–5 Werktagen an die Adresse aus deinem PayPal-Konto.`;
+  document.getElementById('successText').innerHTML = `Deine PayPal-Zahlung ist eingegangen (Bestellnummer <strong>${details.id}</strong>). Wir versenden innerhalb von 3–5 Werktagen an die Adresse aus deinem PayPal-Konto. Schick uns bitte noch kurz die Bestellbestätigung, damit wir Zahlung und Bestellung zuordnen können.`;
   document.getElementById('successPayment').innerHTML = `
     <div class="pay-box">
       <div class="pay-total">Bezahlt: ${fmt(total)}</div>
-      <div class="pay-method">
-        <div class="pay-method-title">Bestellbestätigung</div>
-        <div class="pay-method-body">Falls sich dein E-Mail-Programm nicht geöffnet hat: Schick uns bitte noch die Bestätigung, damit wir Bestellung und Zahlung zuordnen können.<br>
-        <a class="pay-paypal-btn" href="${link}">Bestätigung per E-Mail senden</a></div>
-      </div>
+      ${mailBlock(link, 'Bestellbestätigung')}
     </div>`;
+  document.getElementById('orderText').textContent = lastOrderText;
   cart = [];
   saveCart();
   updateCartUI();
   document.getElementById('successModal').classList.add('open');
   document.body.style.overflow='hidden';
-  window.location.href = link;
+  openMail(link);
 }
 
-function renderPayment(total, custName){
+function renderPayment(total, custName, link){
   const totalStr = fmt(total);
-  let paypal;
-  if(PAYPAL_LINK){
-    paypal = `<a class="pay-paypal-btn" href="${PAYPAL_LINK}/${total.toFixed(2)}EUR" target="_blank" rel="noopener">Mit PayPal zahlen</a>`;
-  } else {
-    paypal = `<span class="pay-soon">PayPal-Zahlung folgt in Kürze.</span>`;
-  }
+  // PayPal.me-Link nur anbieten, wenn konfiguriert – sonst gibt es den Express-Checkout im Warenkorb
+  const paypal = PAYPAL_LINK
+    ? `<div class="pay-method"><div class="pay-method-title">PayPal</div><div class="pay-method-body"><a class="pay-paypal-btn" href="${PAYPAL_LINK}/${total.toFixed(2)}EUR" target="_blank" rel="noopener">Mit PayPal zahlen</a></div></div>`
+    : '';
   document.getElementById('successPayment').innerHTML = `
     <div class="pay-box">
-      <div class="pay-total">Zu zahlen: ${totalStr}</div>
+      ${mailBlock(link, '1 · Bestellung abschicken')}
+      <div class="pay-total">2 · Zu zahlen: ${totalStr}</div>
       <div class="pay-method">
         <div class="pay-method-title">Überweisung</div>
         <div class="pay-method-body">
@@ -2052,10 +2109,7 @@ function renderPayment(total, custName){
           Betrag: <strong>${totalStr}</strong>
         </div>
       </div>
-      <div class="pay-method">
-        <div class="pay-method-title">PayPal</div>
-        <div class="pay-method-body">${paypal}</div>
-      </div>
+      ${paypal}
     </div>`;
 }
 
@@ -2126,8 +2180,8 @@ function submitReview(){
   const text = document.getElementById('rev-text').value.trim();
   if(!text){ alert('Bitte schreib ein paar Worte zu deiner Bewertung.'); return; }
   const stars = '★'.repeat(reviewStars) + '☆'.repeat(5 - reviewStars);
-  const body = `Neue Bewertung%0A%0ABewertung: ${stars} (${reviewStars}/5)%0AName: ${name || '(ohne Namen)'}%0A%0A${text}`;
-  window.location.href = `mailto:hallo@flaconella.de?subject=Neue Bewertung von ${name || 'Kunde'}&body=${body}`;
+  const body = `Neue Bewertung\n\nBewertung: ${stars} (${reviewStars}/5)\nName: ${name || '(ohne Namen)'}\n\n${text}`;
+  openMail(mailtoLink(`Neue Bewertung von ${name || 'Kunde'}`, body));
   showToast('Danke! Deine Bewertung ist unterwegs.');
   document.getElementById('rev-name').value = '';
   document.getElementById('rev-text').value = '';
