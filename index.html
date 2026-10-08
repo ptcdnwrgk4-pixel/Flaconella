@@ -164,8 +164,24 @@ section{padding:100px 60px;}
 .pick-thumb{width:40px;height:40px;object-fit:cover;background:#f2eee6;flex-shrink:0;border:1px solid rgba(0,0,0,0.12);}
 .pick-name{font-size:12px;color:rgba(240,232,208,0.75);flex:1;}
 .pick-price{font-size:12px;color:#c4a96a;font-weight:300;}
-.pick-option{display:none;margin:0 14px 12px 66px;width:calc(100% - 80px);background:#111;border:1px solid rgba(240,232,208,0.12);color:#f0e8d0;padding:8px 10px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;outline:none;}
-.pick-row.selected .pick-option{display:block;}
+.pick-price strong{color:#c4a96a;font-weight:500;}
+.pick-unit{font-size:9px;color:rgba(240,232,208,0.3);letter-spacing:1px;}
+.pick-config{display:none;padding:0 14px 14px 14px;border-top:1px solid rgba(240,232,208,0.06);}
+.pick-row.selected .pick-config{display:block;}
+.pick-option{width:100%;margin:12px 0 4px;background:#111;border:1px solid rgba(240,232,208,0.12);color:#f0e8d0;padding:8px 10px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;outline:none;}
+.pick-group{margin-top:12px;}
+.pick-group-label{display:block;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:#8a8060;font-weight:600;margin-bottom:7px;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{background:#111;border:1px solid rgba(240,232,208,0.12);color:rgba(240,232,208,0.7);padding:7px 11px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;cursor:pointer;display:flex;align-items:center;gap:8px;transition:border-color .15s,background .15s,color .15s;}
+.chip em{font-style:normal;font-size:10px;color:#c4a96a;}
+.chip:hover{border-color:#8a8060;}
+.chip.on{border-color:#c4a96a;background:rgba(196,169,106,0.12);color:#fff;}
+.pick-qty .qty-picker{margin-bottom:0;}
+.cross-sell{display:flex;align-items:center;justify-content:space-between;gap:16px;background:#0d0d0d;border:1px solid rgba(196,169,106,0.3);padding:16px 18px;margin-bottom:20px;}
+.cross-sell-title{font-family:'Playfair Display',serif;font-size:15px;color:#fff;margin-bottom:4px;}
+.cross-sell p{font-size:11px;color:rgba(240,232,208,0.5);line-height:1.6;font-weight:300;}
+.cross-sell .overlay-btn{flex-shrink:0;white-space:nowrap;}
+@media(max-width:600px){.cross-sell{flex-direction:column;align-items:flex-start;}}
 .pick-option option{background:#0d0d0d;}
 .modal-add-btn:disabled{opacity:0.4;cursor:not-allowed;}
 .shop-principle{max-width:680px;margin:0 auto 44px;text-align:center;padding:26px 30px;border:1px solid rgba(138,128,96,0.2);background:#111;transition:border-color .3s var(--ease);}
@@ -1018,7 +1034,7 @@ const CATEGORIES = [
   {key:'flasche',      name:'Flaschen',     desc:'Eine Flasche, viele Rollen – Karaffe, Vase oder Lampe, je nach Zubehör.', priceHint:'je 24,90 € + Zubehör'},
   {key:'windlicht',    name:'Windlichter',  desc:'Geschnittene Flaschen mit Gravur – Wachsteelicht und Untersetzer inklusive.', priceHint:'39,00 €'},
   {key:'kerze',        name:'Kerzen',       desc:'Handgegossene Kerzen aus Bienen- und Gelwachs in Glas.', priceHint:'ab 25,00 €'},
-  {key:'kerzenhalter', name:'Kerzenhalter', desc:'Flasche mit Kerzenaufsatz – Wachskerze inklusive.', priceHint:'39,00 €'},
+  {key:'kerzenhalter', name:'Kerzenhalter', desc:'Flasche mit Kerzenaufsatz – Wachskerze inklusive. Einzeln pro Stück oder als 3er-Set.', priceHint:'39,00 € pro Stück · Set 109,00 €'},
   {key:'set',          name:'Sets',         desc:'Kuratierte Paare und Trios mit Set-Vorteil – ideal als Geschenk.', priceHint:'ab 44,90 €'},
 ];
 
@@ -1033,7 +1049,7 @@ const PRODUCTS = [
     desc:'Elegante, mediterran gravierte Lugana-Flasche mit schlankem Hals. Wahlweise mit klassischer Gravur oder feinem Blütenrelief, das im Licht erst richtig zur Geltung kommt. Mit Korken eine edle Karaffe oder Trinkflasche – mit Lichterkette oder Lampenschirm ein Hingucker auf Regal, Sideboard, Esstisch, Terrasse und Garten.',
     icon:'🍾', badge:'Bestseller', badgeType:'',
     image:'images/lampe-bulgarini-classic.webp',
-    gallery:['images/lampe-bulgarini-classic.webp','images/lampe-bulgarini-blueten.webp'],
+    gallery:['images/lampe-bulgarini-classic.webp','images/lampe-bulgarini-blueten.webp','pimg:d1'],
     option:{label:'Ausführung', choices:['Klassische Gravur','Blütenrelief']},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
@@ -1075,15 +1091,6 @@ const PRODUCTS = [
     image:'images/lampe-weinflasche.webp',
     gallery:['images/lampe-weinflasche.webp','images/lampe-weinflasche-klar.webp','images/lampe-rotwein.webp'],
     option:{label:'Ausführung', choices:['Hell (klar)','Dunkel (olivgrün)']},
-    price:BOTTLE_BASE, addons:BOTTLE_ADDONS
-  },
-  {
-    id:'d1', cat:'flasche', label:'Flasche',
-    name:'Flasche Botanik',
-    tagline:'Bulgarini mit vollflächiger Botanik-Gravur',
-    desc:'Die hohe Bulgarini-Flasche vollständig mit Blättern, Ranken und Blüten graviert – ein Kunstobjekt, das auch ohne Strom auskommt. Als Vase mit getrockneten Blumen, als Karaffe oder mit Lichterkette als Lampe.',
-    icon:'🍾', badge:'', badgeType:'',
-    image:'images/dekoflasche-botanik.webp',
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -1224,17 +1231,20 @@ const PRODUCTS = [
   // ── KERZENHALTER ──
   {
     id:'k1', cat:'kerzenhalter', label:'Kerzenhalter',
-    name:'Kerzenhalter',
-    tagline:'Flasche mit Kerzenaufsatz – Wachskerze inklusive',
-    desc:'Eine Flasche mit Kerzenaufsatz – schlicht, standfest, mit Wachskerze inklusive. Als Tischdeko für besondere Abende oder als Geschenk, das bleibt. Drei aufeinander abgestimmte Höhen gibt es als 3er-Set unter „Sets“.',
-    icon:'🍷', badge:'', badgeType:'',
+    name:'Kerzenhalter einzeln',
+    tagline:'Ein Kerzenhalter – Preis gilt pro Stück, Wachskerze inklusive',
+    desc:'Eine Flasche mit Kerzenaufsatz – schlicht, standfest, mit Wachskerze inklusive. Als Tischdeko für besondere Abende oder als Geschenk, das bleibt. Der Preis gilt für einen einzelnen Kerzenhalter; die Anzahl wählst du unten.',
+    icon:'🍷', badge:'Einzelstück', badgeType:'',
     image:'images/kerzenhalter_set_3er_02.webp',
+    unitLabel:'pro Stück',
+    crossSell:{pid:'set-k3', title:'Lieber gleich als 3er-Set?', text:'Drei aufeinander abgestimmte Höhen, Wachskerzen inklusive – 109,00 € statt 117,00 € einzeln.', btn:'Zum 3er-Set'},
     price:39, addons:[GIFT_ADDON]
   },
 
   // ── SETS ──
   {
-    id:'set-k3', cat:'set', label:'Set', imgId:'k1',
+    id:'set-k3', cat:'set', label:'Set', imgId:'k1', alsoIn:['kerzenhalter'],
+    crossSell:{pid:'k1', title:'Nur einen?', text:'Den Kerzenhalter gibt es auch einzeln für 39,00 € pro Stück.', btn:'Zum Einzelstück'},
     name:'Kerzenhalter 3er-Set',
     tagline:'Drei Höhen, ein Stil – mit Wachskerzen inklusive',
     desc:'Drei aufeinander abgestimmte Flaschen mit Kerzenaufsatz – unterschiedliche Höhen, gleicher Stil. Als Tischdeko für besondere Abende oder als Geschenk-Set, das bleibt. Wachskerzen inklusive.',
@@ -1261,9 +1271,7 @@ if(!Array.isArray(cart)) cart = [];
 cart = cart.filter(i => i && typeof i.price === 'number' && Array.isArray(i.addons) && PRODUCTS.some(p => p.id === i.productId));
 let currentProduct = null;
 let currentCat = null;
-let selectedAddons = []; // pro Zubehör-Gruppe ein Array gewählter Options-Indizes
-let selectedQty = 1;
-let selectedProducts = {}; // pid -> {checked:bool, option:idx} für die Häkchen-Liste im Produkt-Fenster
+let selectedProducts = {}; // pid -> {checked, option, addons, qty} für die Liste im Produkt-Fenster
 
 // ── HELPERS ──
 function fmt(n){
@@ -1302,6 +1310,10 @@ function getImgSrc(p){
 }
 
 function getGallerySrc(path){
+  if(path.indexOf('pimg:') === 0){
+    const el = document.getElementById('pimg-' + path.slice(5));
+    return (el && el.src) ? el.src : '';
+  }
   const cached = document.getElementById('galimg-' + path.replace(/[^a-zA-Z0-9_]/g,'-'));
   if(cached && cached.src) return cached.src;
   return path;
@@ -1322,13 +1334,14 @@ function getNote(p){
 }
 
 function productsIn(cat){
-  return PRODUCTS.filter(p => p.cat === cat);
+  return PRODUCTS.filter(p => p.cat === cat || (p.alsoIn && p.alsoIn.indexOf(cat) !== -1));
 }
 
 function priceHintFor(p){
+  const unit = p.unitLabel ? ` <span class="product-price-sub">${p.unitLabel}</span>` : '';
   return hasPaidAddons(p)
-    ? `${fmt(p.price)} <span class="product-price-sub">· Zubehör wählbar</span>`
-    : fmt(p.price);
+    ? `${fmt(p.price)}${unit} <span class="product-price-sub">· Zubehör wählbar</span>`
+    : `${fmt(p.price)}${unit}`;
 }
 
 // Startseite des Shops: eine Kachel pro Kategorie mit Mini-Vorschau der Produkte
@@ -1427,16 +1440,24 @@ function bottleSVG(icon, cat){
 
 // ── PRODUCT MODAL ──
 function openProduct(id){
-  currentProduct = PRODUCTS.find(p=>p.id===id);
-  if(!currentProduct) return;
-  selectedAddons = defaultAddons(currentProduct);
-  selectedQty = 1;
+  const p = PRODUCTS.find(x=>x.id===id);
+  if(!p) return;
+  const modal = document.getElementById('productModal');
+  const alreadyOpen = modal.classList.contains('open');
+  currentProduct = p;
   selectedProducts = {};
-  siblingsOf(currentProduct).forEach(p => { selectedProducts[p.id] = {checked: p.id === currentProduct.id, option: 0}; });
+  siblingsOf(p).forEach(x => {
+    selectedProducts[x.id] = {checked: x.id === p.id, option: 0, addons: defaultAddons(x), qty: 1};
+  });
   renderModal();
-  document.getElementById('productModal').classList.add('open');
+  modal.classList.add('open');
   document.body.style.overflow='hidden';
-  history.pushState({modal:'product'}, '');
+  if(alreadyOpen){
+    const box = document.getElementById('modalContent');
+    if(box) box.scrollTop = 0;
+  } else {
+    history.pushState({modal:'product'}, '');
+  }
 }
 
 window.addEventListener('popstate', function(){
@@ -1502,21 +1523,10 @@ function renderModal(){
   }
 
   const sibs = siblingsOf(p);
-  const addonGroups = (p.addons || []).map((g, gi) => `
-    <div class="modal-option-label">${g.label}${g.type === 'single' ? ' wählen' : ''}</div>
-    <div class="variant-selector addon-group" data-group="${gi}">
-      ${g.options.map((o, oi) => {
-        const checked = (selectedAddons[gi] || []).indexOf(oi) !== -1;
-        const priceTxt = o.price > 0 ? '+ ' + fmt(o.price) : (o.note || 'inklusive');
-        return `
-        <label class="variant-option addon-option ${checked ? 'selected' : ''}">
-          <input type="${g.type === 'single' ? 'radio' : 'checkbox'}" name="addon${gi}" value="${oi}" ${checked ? 'checked' : ''} onchange="toggleAddon(${gi},${oi},this.checked)">
-          <span class="variant-option-name">${o.name}</span>
-          <span class="variant-option-price ${o.price > 0 ? '' : 'incl'}">${priceTxt}</span>
-        </label>`;
-      }).join('')}
-    </div>
-  `).join('');
+  const cs = p.crossSell ? PRODUCTS.find(x => x.id === p.crossSell.pid) : null;
+  const listLabel = sibs.length > 1
+    ? 'Produkte wählen <span class="modal-option-hint">· Zubehör und Anzahl je Produkt</span>'
+    : ((p.addons && p.addons.length) ? 'Zubehör & Anzahl' : 'Anzahl');
 
   document.getElementById('modalInfo').innerHTML = `
     <div class="modal-cat">${p.label}</div>
@@ -1527,47 +1537,84 @@ function renderModal(){
     <p class="modal-desc">${p.desc}</p>
     ${getUsageTip(p) ? `<p class="modal-tip">${getUsageTip(p)}</p>` : ''}
     ${getNote(p) ? `<p class="modal-note">${getNote(p)}</p>` : ''}
+    ${cs ? `
+      <div class="cross-sell">
+        <div class="cross-sell-text">
+          <div class="cross-sell-title">${p.crossSell.title}</div>
+          <p>${p.crossSell.text}</p>
+        </div>
+        <button type="button" class="overlay-btn" onclick="openProduct('${cs.id}')">${p.crossSell.btn} →</button>
+      </div>` : ''}
     <div class="modal-divider"></div>
-    ${addonGroups}
-    <div class="modal-option-label">Anzahl${sibs.length > 1 ? ' (je Produkt)' : ''}</div>
-    <div class="qty-picker">
-      <button type="button" class="qty-btn" onclick="changeModalQty(-1)">−</button>
-      <span class="qty-num" id="modalQty">${selectedQty}</span>
-      <button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>
-    </div>
-    ${sibs.length > 1 ? `
-      <div class="modal-option-label">Produkte wählen <span class="modal-option-hint">· gleiches Zubehör, gleiche Anzahl</span></div>
-      <div class="pick-list" id="pickList">
-        ${sibs.map(x => `
-          <div class="pick-row ${selectedProducts[x.id].checked ? 'selected' : ''}" data-pid="${x.id}">
-            <label class="pick-main">
-              <input type="checkbox" ${selectedProducts[x.id].checked ? 'checked' : ''} onchange="togglePick('${x.id}', this.checked)">
-              <img class="pick-thumb" alt="" data-pid="${x.id}" onclick="event.preventDefault();showPickImage('${x.id}')">
-              <span class="pick-name">${x.name}</span>
-              <span class="pick-price">${fmt(x.price)}</span>
-            </label>
-            ${x.option ? `<select class="pick-option" onchange="pickOption('${x.id}', this.value)" aria-label="${x.option.label}">
-              ${x.option.choices.map((c,i)=>`<option value="${i}">${x.option.label}: ${c}</option>`).join('')}
-            </select>` : ''}
-          </div>`).join('')}
-      </div>
-    ` : (p.option ? `
-      <div class="modal-option-label">${p.option.label} wählen</div>
-      <div class="variant-selector">
-        ${p.option.choices.map((c,i)=>`
-          <label class="variant-option opt-option ${i===0?'selected':''}">
-            <input type="radio" name="prodoption" value="${i}" ${i===0?'checked':''} onchange="pickOption('${p.id}', ${i})">
-            <span class="variant-option-name">${c}</span>
-          </label>
-        `).join('')}
-      </div>
-    ` : '')}
+    <div class="modal-option-label">${listLabel}</div>
+    <div class="pick-list" id="pickList">${sibs.map(x => renderPickRow(x, sibs.length > 1)).join('')}</div>
     <button class="modal-add-btn" id="modalAddBtn" onclick="addToCart()">In den Warenkorb</button>
   `;
+  setPickThumbs();
+  updateModalPrice();
+}
+
+function setPickThumbs(){
   document.querySelectorAll('#pickList img[data-pid]').forEach(img => {
+    if(img.src) return;
     const x = PRODUCTS.find(y => y.id === img.dataset.pid);
     if(x) img.src = getImgSrc(x);
   });
+}
+
+// Eine Zeile der Häkchen-Liste: Produkt, Ausführung, Zubehör-Chips, Anzahl, Zeilenpreis
+function renderPickRow(x, withCheckbox){
+  const st = selectedProducts[x.id];
+  const addons = chosenAddons(x, st.addons);
+  const unit = unitPrice(x, addons);
+  const line = unit * st.qty;
+  const priceTxt = st.checked
+    ? (st.qty > 1 ? `${st.qty} × ${fmt(unit)} = <strong>${fmt(line)}</strong>` : `<strong>${fmt(unit)}</strong>`)
+    : fmt(x.price) + (x.unitLabel ? ` <span class="pick-unit">${x.unitLabel}</span>` : '');
+  const groups = (x.addons || []).map((g, gi) => `
+    <div class="pick-group">
+      <span class="pick-group-label">${g.label}</span>
+      <div class="chips">
+        ${g.options.map((o, oi) => {
+          const on = (st.addons[gi] || []).indexOf(oi) !== -1;
+          const ptxt = o.price > 0 ? '+ ' + fmt(o.price) : (o.note || 'inkl.');
+          return `<button type="button" class="chip ${on ? 'on' : ''}" onclick="rowAddon('${x.id}',${gi},${oi})">${o.name}<em>${ptxt}</em></button>`;
+        }).join('')}
+      </div>
+    </div>`).join('');
+  return `
+    <div class="pick-row ${st.checked ? 'selected' : ''}" data-pid="${x.id}">
+      <label class="pick-main">
+        ${withCheckbox ? `<input type="checkbox" ${st.checked ? 'checked' : ''} onchange="togglePick('${x.id}', this.checked)">` : ''}
+        <img class="pick-thumb" alt="" data-pid="${x.id}" onclick="event.preventDefault();showPickImage('${x.id}')">
+        <span class="pick-name">${x.name}</span>
+        <span class="pick-price">${priceTxt}</span>
+      </label>
+      <div class="pick-config">
+        ${x.option ? `<select class="pick-option" onchange="pickOption('${x.id}', this.value)" aria-label="${x.option.label}">
+          ${x.option.choices.map((c,i)=>`<option value="${i}" ${i===st.option?'selected':''}>${x.option.label}: ${c}</option>`).join('')}
+        </select>` : ''}
+        ${groups}
+        <div class="pick-group pick-qty">
+          <span class="pick-group-label">Anzahl</span>
+          <div class="qty-picker">
+            <button type="button" class="qty-btn" onclick="rowQty('${x.id}',-1)">−</button>
+            <span class="qty-num">${st.qty}</span>
+            <button type="button" class="qty-btn" onclick="rowQty('${x.id}',1)">+</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function rerenderRow(pid){
+  const x = PRODUCTS.find(y => y.id === pid);
+  const old = document.querySelector(`.pick-row[data-pid="${pid}"]`);
+  if(!x || !old) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = renderPickRow(x, siblingsOf(currentProduct).length > 1);
+  old.replaceWith(tmp.firstElementChild);
+  setPickThumbs();
   updateModalPrice();
 }
 
@@ -1580,22 +1627,44 @@ function showPickImage(pid){
   }
 }
 
-function changeModalQty(delta){
-  selectedQty = Math.min(20, Math.max(1, selectedQty + delta));
-  document.getElementById('modalQty').textContent = selectedQty;
-  updateModalPrice();
-}
-
 function togglePick(pid, on){
-  if(selectedProducts[pid]) selectedProducts[pid].checked = on;
-  const row = document.querySelector(`.pick-row[data-pid="${pid}"]`);
-  if(row) row.classList.toggle('selected', on);
-  updateModalPrice();
+  const st = selectedProducts[pid];
+  if(!st) return;
+  st.checked = on;
+  // Neu angekreuzte Produkte übernehmen Zubehör und Anzahl des geöffneten Produkts als Startwert
+  const ref = selectedProducts[currentProduct.id];
+  if(on && ref && pid !== currentProduct.id){
+    st.addons = JSON.parse(JSON.stringify(ref.addons));
+    st.qty = ref.qty;
+  }
+  rerenderRow(pid);
 }
 
 function pickOption(pid, idx){
   if(selectedProducts[pid]) selectedProducts[pid].option = +idx;
-  document.querySelectorAll('.opt-option').forEach((el,i)=>el.classList.toggle('selected',i===+idx));
+}
+
+function rowAddon(pid, gi, oi){
+  const st = selectedProducts[pid];
+  const x = PRODUCTS.find(y => y.id === pid);
+  if(!st || !x) return;
+  const g = x.addons[gi];
+  if(g.type === 'single'){
+    st.addons[gi] = [oi];
+  } else {
+    const cur = st.addons[gi] || [];
+    st.addons[gi] = cur.indexOf(oi) === -1 ? cur.concat([oi]) : cur.filter(i => i !== oi);
+  }
+  if(!st.checked) st.checked = true;
+  rerenderRow(pid);
+}
+
+function rowQty(pid, delta){
+  const st = selectedProducts[pid];
+  if(!st) return;
+  st.qty = Math.min(20, Math.max(1, st.qty + delta));
+  if(!st.checked) st.checked = true;
+  rerenderRow(pid);
 }
 
 function pickedProducts(){
@@ -1604,42 +1673,37 @@ function pickedProducts(){
 
 function updateModalPrice(){
   const p = currentProduct;
-  const addons = chosenAddons(p, selectedAddons);
-  const total = unitPrice(p, addons);
-  document.getElementById('modalPrice').textContent = fmt(total);
-  const bd = document.getElementById('modalBreakdown');
-  if(addons.length){
-    bd.textContent = `${p.label} ${fmt(p.price)} + ` + addons.map(a => `${a.name} ${fmt(a.price)}`).join(' + ');
-    bd.style.display = '';
-  } else if(hasPaidAddons(p)){
-    bd.textContent = `${p.label} ${fmt(p.price)} · Zubehör nach Wahl`;
-    bd.style.display = '';
-  } else {
-    bd.style.display = 'none';
-  }
   const picked = pickedProducts();
-  const sum = picked.reduce((s,x)=>s + unitPrice(x, addons) * selectedQty, 0);
-  const pieces = picked.length * selectedQty;
+  let sum = 0, pieces = 0;
+  picked.forEach(x => {
+    const st = selectedProducts[x.id];
+    sum += unitPrice(x, chosenAddons(x, st.addons)) * st.qty;
+    pieces += st.qty;
+  });
+  const priceEl = document.getElementById('modalPrice');
+  const bd = document.getElementById('modalBreakdown');
+  if(picked.length === 0){
+    priceEl.textContent = fmt(p.price);
+    bd.textContent = p.unitLabel ? `${p.label} ${fmt(p.price)} ${p.unitLabel}` : (hasPaidAddons(p) ? `${p.label} ${fmt(p.price)} · Zubehör nach Wahl` : '');
+  } else if(picked.length === 1){
+    const st = selectedProducts[picked[0].id];
+    const addons = chosenAddons(picked[0], st.addons);
+    priceEl.textContent = fmt(sum);
+    bd.textContent = `${picked[0].label} ${fmt(picked[0].price)}${p.unitLabel ? ' ' + p.unitLabel : ''}`
+      + addons.map(a => ` + ${a.name} ${fmt(a.price)}`).join('')
+      + (st.qty > 1 ? ` · × ${st.qty}` : '');
+  } else {
+    priceEl.textContent = fmt(sum);
+    bd.textContent = `${picked.length} Produkte · ${pieces} Stück · Zubehör je Produkt gewählt`;
+  }
+  bd.style.display = bd.textContent ? '' : 'none';
   const btn = document.getElementById('modalAddBtn');
   if(btn){
     btn.disabled = picked.length === 0;
     btn.textContent = picked.length === 0
       ? 'Bitte mindestens ein Produkt wählen'
-      : `In den Warenkorb · ${pieces} ${pieces === 1 ? 'Stück' : 'Stück'} · ${fmt(sum)}`;
+      : `In den Warenkorb · ${pieces} Stück · ${fmt(sum)}`;
   }
-}
-
-function toggleAddon(gi, oi, on){
-  const g = currentProduct.addons[gi];
-  if(g.type === 'single'){
-    selectedAddons[gi] = [oi];
-  } else {
-    const cur = selectedAddons[gi] || [];
-    selectedAddons[gi] = on ? cur.concat(cur.indexOf(oi) === -1 ? [oi] : []) : cur.filter(x => x !== oi);
-  }
-  const box = document.querySelector(`.addon-group[data-group="${gi}"]`);
-  if(box) box.querySelectorAll('.addon-option').forEach((el, i) => el.classList.toggle('selected', selectedAddons[gi].indexOf(i) !== -1));
-  updateModalPrice();
 }
 
 function closeModal(){
@@ -1660,13 +1724,14 @@ function quickAdd(id){
 function addToCart(){
   const picked = pickedProducts();
   if(!picked.length) return;
-  const addons = chosenAddons(currentProduct, selectedAddons);
+  let pieces = 0;
   picked.forEach(x => {
-    const option = x.option ? x.option.choices[selectedProducts[x.id].option] : '';
-    addItemToCart(x, option, addons, selectedQty);
+    const st = selectedProducts[x.id];
+    const option = x.option ? x.option.choices[st.option] : '';
+    addItemToCart(x, option, chosenAddons(x, st.addons), st.qty);
+    pieces += st.qty;
   });
-  const pieces = picked.length * selectedQty;
-  showToast(picked.length === 1 ? `${picked[0].name} hinzugefügt` : `${pieces} Stück hinzugefügt`);
+  showToast(picked.length === 1 && pieces === 1 ? `${picked[0].name} hinzugefügt` : `${pieces} Stück hinzugefügt`);
   closeModal();
 }
 
