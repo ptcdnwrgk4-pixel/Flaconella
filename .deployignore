@@ -1,0 +1,9 @@
+# Wird nicht zu IONOS hochgeladen
+.git/
+.github/
+.deployignore
+.nojekyll
+README.md
+DEPLOY.md
+version.txt
+dist/
