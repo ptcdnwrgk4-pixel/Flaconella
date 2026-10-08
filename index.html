@@ -123,7 +123,52 @@ section{padding:100px 60px;}
 .product-badge.custom{background:#c4a96a;}
 .product-card.hidden{display:none;}
 .product-price-sub{font-size:9px;letter-spacing:1px;color:rgba(240,232,208,0.28);}
-.shop-principle{max-width:680px;margin:-24px auto 44px;text-align:center;padding:26px 30px;border:1px solid rgba(138,128,96,0.2);background:#111;transition:border-color .3s var(--ease);}
+/* Kategorie-Kacheln */
+.shop-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;}
+.shop-overview[hidden],.shop-category[hidden]{display:none;}
+.cat-tile{background:#111;cursor:pointer;display:flex;flex-direction:column;transition:transform .35s var(--ease),box-shadow .35s var(--ease);position:relative;}
+.cat-tile:hover{transform:translateY(-3px);box-shadow:0 18px 40px rgba(0,0,0,0.4);z-index:1;}
+.cat-tile:hover .cat-link{color:#c4a96a;}
+.cat-preview{background:#f2eee6;height:260px;display:grid;gap:2px;padding:2px;}
+.cat-preview.n1{grid-template-columns:1fr;}
+.cat-preview.n2{grid-template-columns:1fr 1fr;}
+.cat-preview.n3{grid-template-columns:1fr 1fr 1fr;}
+.cat-preview.n4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;}
+.cat-preview-img{background:#f2eee6;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:0;}
+.cat-preview-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease;}
+.cat-tile:hover .cat-preview-img img{transform:scale(1.04);}
+.cat-info{padding:24px 22px 22px;border-top:1px solid #1a1a1a;display:flex;flex-direction:column;flex:1;}
+.cat-name{font-family:'Playfair Display',serif;font-size:24px;color:#fff;margin-bottom:8px;}
+.cat-desc{font-size:12px;color:rgba(240,232,208,0.4);line-height:1.7;font-weight:300;margin-bottom:18px;flex:1;}
+.cat-foot{display:flex;justify-content:space-between;align-items:baseline;gap:12px;}
+.cat-price{font-size:13px;color:rgba(240,232,208,0.6);font-weight:300;}
+.cat-link{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:#8a8060;font-weight:600;transition:color .2s;}
+/* Kategorie-Ansicht */
+.shop-cat-nav{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-bottom:40px;}
+.shop-back{background:none;border:none;cursor:pointer;color:#8a8060;font-family:'Montserrat',sans-serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;font-weight:600;padding:10px 0;transition:color .2s;}
+.shop-back:hover{color:#c4a96a;}
+.shop-cat-nav .shop-filters{margin-bottom:0;}
+.shop-cat-head{margin-bottom:36px;}
+.shop-cat-head h3{font-family:'Playfair Display',serif;font-size:36px;font-weight:400;color:#fff;line-height:1.1;margin-bottom:8px;}
+.shop-cat-head p{font-size:13px;color:rgba(240,232,208,0.45);font-weight:300;line-height:1.7;max-width:560px;}
+/* Produkt-Fenster: Anzahl + Häkchen-Liste */
+.qty-picker{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
+.qty-picker .qty-btn{width:32px;height:32px;font-size:16px;}
+.qty-picker .qty-num{font-size:14px;min-width:28px;}
+.modal-option-hint{letter-spacing:1px;text-transform:none;color:rgba(240,232,208,0.3);font-weight:300;}
+.pick-list{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;}
+.pick-row{background:#0d0d0d;border:1px solid rgba(240,232,208,0.08);transition:border-color .2s;}
+.pick-row.selected{border-color:#8a8060;}
+.pick-main{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;}
+.pick-main input[type=checkbox]{accent-color:#c4a96a;flex-shrink:0;}
+.pick-thumb{width:40px;height:40px;object-fit:cover;background:#f2eee6;flex-shrink:0;border:1px solid rgba(0,0,0,0.12);}
+.pick-name{font-size:12px;color:rgba(240,232,208,0.75);flex:1;}
+.pick-price{font-size:12px;color:#c4a96a;font-weight:300;}
+.pick-option{display:none;margin:0 14px 12px 66px;width:calc(100% - 80px);background:#111;border:1px solid rgba(240,232,208,0.12);color:#f0e8d0;padding:8px 10px;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:300;outline:none;}
+.pick-row.selected .pick-option{display:block;}
+.pick-option option{background:#0d0d0d;}
+.modal-add-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.shop-principle{max-width:680px;margin:0 auto 44px;text-align:center;padding:26px 30px;border:1px solid rgba(138,128,96,0.2);background:#111;transition:border-color .3s var(--ease);}
 .shop-principle.highlight{border-color:#c4a96a;}
 .shop-principle-price{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:rgba(240,232,208,0.7);margin-bottom:8px;}
 .shop-principle-price strong{color:#c4a96a;font-weight:500;}
@@ -296,8 +341,8 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
 .modal{background:#111;max-width:860px;width:100%;max-height:90vh;overflow-y:auto;position:relative;border:1px solid rgba(138,128,96,0.12);box-shadow:0 40px 100px rgba(0,0,0,0.6);}
 .modal-close{position:absolute;top:20px;right:20px;background:none;border:none;cursor:pointer;color:rgba(240,232,208,0.4);font-size:22px;z-index:1;transition:color 0.2s;line-height:1;}
 .modal-close:hover{color:#c4a96a;}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;}
-.modal-img{background:#f2eee6;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;overflow:hidden;}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;background:linear-gradient(90deg,#f2eee6 50%,#111 50%);}
+.modal-img{background:#f2eee6;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:400px;overflow:hidden;position:sticky;top:0;align-self:start;max-height:90vh;}
 .modal-info{padding:48px 40px;display:flex;flex-direction:column;}
 .modal-cat{font-size:8px;letter-spacing:4px;text-transform:uppercase;color:#8a8060;margin-bottom:12px;font-weight:600;}
 .modal-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:400;color:#fff;line-height:1.15;margin-bottom:6px;}
@@ -382,15 +427,17 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
   .hero{padding:100px 24px 70px;}
   .hero-logo img{width:160px;}
   .hero h1{font-size:36px;}
-  .highlights-grid,.shop-grid,.testimonials-grid{grid-template-columns:1fr;}
+  .highlights-grid,.shop-grid,.shop-overview,.testimonials-grid{grid-template-columns:1fr;}
+  .cat-preview{height:200px;}
+  .shop-cat-head h3{font-size:28px;}
   .story-grid,.custom-grid,.contact-grid{grid-template-columns:1fr;gap:48px;}
   .process-steps{grid-template-columns:1fr 1fr;}
   .numbers-grid{grid-template-columns:1fr 1fr;}
   footer{grid-template-columns:1fr 1fr;gap:40px;padding:48px 24px;}
   .footer-bottom{padding:16px 24px;flex-direction:column;gap:8px;text-align:center;}
   .cart-sidebar{width:100%;}
-  .modal-grid{grid-template-columns:1fr;}
-  .modal-img{min-height:0;height:240px;}
+  .modal-grid{grid-template-columns:1fr;background:none;}
+  .modal-img{min-height:0;height:240px;position:static;max-height:none;}
   .highlights,.numbers,.testimonials,.process{padding:60px 24px;}
 }
 @media(max-width:600px){
@@ -478,19 +525,25 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
     <h2>Der Shop</h2>
     <p>Handgefertigt · Limitiert · Jedes Stück ein Original</p>
   </div>
-  <div class="shop-principle" id="shopPrinciple">
-    <div class="shop-principle-price">Jede Flasche <strong>24,90 €</strong></div>
-    <p>Egal welche Form oder Gravur – jede Flasche kostet gleich. Du entscheidest, was dazukommt: Korken (inklusive), Dekokorken, LED-Lichterkette oder Lampenschirm – jedes Zubehör mit eigenem Preis. So wird aus derselben Flasche eine Karaffe, eine Vase oder eine Lampe.</p>
+  <!-- Übersicht: eine Kachel pro Kategorie -->
+  <div class="shop-overview" id="shopOverview"></div>
+
+  <!-- Kategorie-Ansicht: Produkte mit Namen -->
+  <div class="shop-category" id="shopCategory" hidden>
+    <div class="shop-cat-nav">
+      <button class="shop-back" onclick="showOverview()">← Alle Kategorien</button>
+      <div class="shop-filters" id="shopTabs"></div>
+    </div>
+    <div class="shop-cat-head">
+      <h3 id="shopCatTitle"></h3>
+      <p id="shopCatDesc"></p>
+    </div>
+    <div class="shop-principle" id="shopPrinciple">
+      <div class="shop-principle-price">Jede Flasche <strong>24,90 €</strong></div>
+      <p>Egal welche Form oder Gravur – jede Flasche kostet gleich. Du entscheidest, was dazukommt: Korken (inklusive), Dekokorken, LED-Lichterkette oder Lampenschirm – jedes Zubehör mit eigenem Preis. So wird aus derselben Flasche eine Karaffe, eine Vase oder eine Lampe. Im Produkt-Fenster kannst du mehrere Flaschen mit demselben Zubehör auf einmal wählen.</p>
+    </div>
+    <div class="shop-grid" id="shopGrid"></div>
   </div>
-  <div class="shop-filters">
-    <button class="filter-btn active" data-filter="all" onclick="filterProducts('all',this)">Alle</button>
-    <button class="filter-btn" data-filter="flasche" onclick="filterProducts('flasche',this)">Flaschen</button>
-    <button class="filter-btn" data-filter="windlicht" onclick="filterProducts('windlicht',this)">Windlichter</button>
-    <button class="filter-btn" data-filter="kerze" onclick="filterProducts('kerze',this)">Kerzen</button>
-    <button class="filter-btn" data-filter="kerzenhalter" onclick="filterProducts('kerzenhalter',this)">Kerzenhalter</button>
-    <button class="filter-btn" data-filter="set" onclick="filterProducts('set',this)">Sets</button>
-  </div>
-  <div class="shop-grid" id="shopGrid"></div>
 </section>
 
 <!-- STORY -->
@@ -686,11 +739,11 @@ footer{background:#0a0a0a;border-top:1px solid rgba(138,128,96,0.12);padding:60p
   <div class="footer-col">
     <h4>Shop</h4>
     <ul>
-      <li><a href="#shop">Flaschen</a></li>
-      <li><a href="#shop">Windlichter</a></li>
-      <li><a href="#shop">Kerzen</a></li>
-      <li><a href="#shop">Kerzenhalter</a></li>
-      <li><a href="#shop">Sets</a></li>
+      <li><a href="#shop" onclick="openCategory('flasche');return false;">Flaschen</a></li>
+      <li><a href="#shop" onclick="openCategory('windlicht');return false;">Windlichter</a></li>
+      <li><a href="#shop" onclick="openCategory('kerze');return false;">Kerzen</a></li>
+      <li><a href="#shop" onclick="openCategory('kerzenhalter');return false;">Kerzenhalter</a></li>
+      <li><a href="#shop" onclick="openCategory('set');return false;">Sets</a></li>
     </ul>
   </div>
   <div class="footer-col">
@@ -960,6 +1013,15 @@ const BOTTLE_DUO_ADDONS = [
   GIFT_ADDON,
 ];
 
+// ── KATEGORIEN ──
+const CATEGORIES = [
+  {key:'flasche',      name:'Flaschen',     desc:'Eine Flasche, viele Rollen – Karaffe, Vase oder Lampe, je nach Zubehör.', priceHint:'je 24,90 € + Zubehör'},
+  {key:'windlicht',    name:'Windlichter',  desc:'Geschnittene Flaschen mit Gravur – Wachsteelicht und Untersetzer inklusive.', priceHint:'39,00 €'},
+  {key:'kerze',        name:'Kerzen',       desc:'Handgegossene Kerzen aus Bienen- und Gelwachs in Glas.', priceHint:'ab 25,00 €'},
+  {key:'kerzenhalter', name:'Kerzenhalter', desc:'Flasche mit Kerzenaufsatz – Wachskerze inklusive.', priceHint:'39,00 €'},
+  {key:'set',          name:'Sets',         desc:'Kuratierte Paare und Trios mit Set-Vorteil – ideal als Geschenk.', priceHint:'ab 44,90 €'},
+];
+
 // ── PRODUCT DATA ──
 // Kategorien: flasche · windlicht · kerze · kerzenhalter · set
 const PRODUCTS = [
@@ -1198,8 +1260,10 @@ let cart = JSON.parse(localStorage.getItem('flaconella_cart') || '[]');
 if(!Array.isArray(cart)) cart = [];
 cart = cart.filter(i => i && typeof i.price === 'number' && Array.isArray(i.addons) && PRODUCTS.some(p => p.id === i.productId));
 let currentProduct = null;
-let selectedOption = 0;
+let currentCat = null;
 let selectedAddons = []; // pro Zubehör-Gruppe ein Array gewählter Options-Indizes
+let selectedQty = 1;
+let selectedProducts = {}; // pid -> {checked:bool, option:idx} für die Häkchen-Liste im Produkt-Fenster
 
 // ── HELPERS ──
 function fmt(n){
@@ -1257,13 +1321,55 @@ function getNote(p){
   return 'Sicherheitshinweis: Handgefertigt aus geschnittenem Glas – Kanten können scharf sein. Nicht für Kinder geeignet.';
 }
 
-function renderShop(){
+function productsIn(cat){
+  return PRODUCTS.filter(p => p.cat === cat);
+}
+
+function priceHintFor(p){
+  return hasPaidAddons(p)
+    ? `${fmt(p.price)} <span class="product-price-sub">· Zubehör wählbar</span>`
+    : fmt(p.price);
+}
+
+// Startseite des Shops: eine Kachel pro Kategorie mit Mini-Vorschau der Produkte
+function renderOverview(){
+  const box = document.getElementById('shopOverview');
+  box.innerHTML = CATEGORIES.map(c => {
+    const items = productsIn(c.key);
+    const previews = items.slice(0, 4);
+    return `<div class="cat-tile" data-cat="${c.key}" onclick="openCategory('${c.key}')">
+      <div class="cat-preview n${previews.length}">
+        ${previews.map(p => `<div class="cat-preview-img"><img alt="${p.name}" data-pid="${p.id}"></div>`).join('')}
+      </div>
+      <div class="cat-info">
+        <span class="product-cat">${items.length} ${items.length === 1 ? 'Produkt' : 'Produkte'}</span>
+        <div class="cat-name">${c.name}</div>
+        <p class="cat-desc">${c.desc}</p>
+        <div class="cat-foot">
+          <span class="cat-price">${c.priceHint}</span>
+          <span class="cat-link">Ansehen →</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('img[data-pid]').forEach(img => {
+    const p = PRODUCTS.find(x => x.id === img.dataset.pid);
+    if(p) img.src = getImgSrc(p);
+  });
+}
+
+// Kategorie-Ansicht: alle Produkte der Kategorie mit Namen
+function renderCategory(cat){
+  const c = CATEGORIES.find(x => x.key === cat);
+  const items = productsIn(cat);
+  document.getElementById('shopCatTitle').textContent = c.name;
+  document.getElementById('shopCatDesc').textContent = c.desc;
+  document.getElementById('shopTabs').innerHTML = CATEGORIES.map(x =>
+    `<button class="filter-btn ${x.key === cat ? 'active' : ''}" onclick="openCategory('${x.key}')">${x.name}</button>`
+  ).join('');
+  document.getElementById('shopPrinciple').style.display = cat === 'flasche' ? '' : 'none';
   const grid = document.getElementById('shopGrid');
-  grid.innerHTML = PRODUCTS.map(p => {
-    const priceLine = hasPaidAddons(p)
-      ? `${fmt(p.price)} <span class="product-price-sub">· Zubehör wählbar</span>`
-      : fmt(p.price);
-    return `<div class="product-card" data-cat="${p.cat}" data-pid="${p.id}" onclick="openProduct('${p.id}')">
+  grid.innerHTML = items.map(p => `<div class="product-card" data-cat="${p.cat}" data-pid="${p.id}" onclick="openProduct('${p.id}')">
       ${p.badge ? `<div class="product-badge ${p.badgeType}">${p.badge}</div>` : ''}
       <div class="product-img">
         ${p.image ? `<img alt="${p.name}">` : bottleSVG(p.icon, p.cat)}
@@ -1275,15 +1381,37 @@ function renderShop(){
       <div class="product-info">
         <span class="product-cat">${p.label}</span>
         <div class="product-name">${p.name}</div>
-        <div class="product-price">${priceLine}</div>
+        <div class="product-price">${priceHintFor(p)}</div>
       </div>
-    </div>`;
-  }).join('');
-  PRODUCTS.forEach(p => {
+    </div>`).join('');
+  items.forEach(p => {
     if(!p.image) return;
     const card = grid.querySelector(`[data-pid="${p.id}"]`);
     if(card){ const img = card.querySelector('.product-img img'); if(img) img.src = getImgSrc(p); }
   });
+}
+
+function openCategory(cat, pushHistory){
+  if(!CATEGORIES.some(c => c.key === cat)) return;
+  const wasOverview = currentCat === null;
+  currentCat = cat;
+  renderCategory(cat);
+  document.getElementById('shopOverview').hidden = true;
+  document.getElementById('shopCategory').hidden = false;
+  if(pushHistory !== false){
+    if(wasOverview) history.pushState({shopCat:cat}, '');
+    else history.replaceState({shopCat:cat}, '');
+  }
+  document.getElementById('shop').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showOverview(pushHistory){
+  if(currentCat === null) return;
+  currentCat = null;
+  document.getElementById('shopCategory').hidden = true;
+  document.getElementById('shopOverview').hidden = false;
+  if(pushHistory !== false && history.state && history.state.shopCat) history.back();
+  else document.getElementById('shop').scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 function bottleSVG(icon, cat){
@@ -1297,23 +1425,14 @@ function bottleSVG(icon, cat){
   </svg>`;
 }
 
-// ── FILTER ──
-function filterProducts(cat, btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('.product-card').forEach(card=>{
-    card.classList.toggle('hidden', cat!=='all' && card.dataset.cat!==cat);
-  });
-  const note = document.getElementById('shopPrinciple');
-  if(note) note.classList.toggle('highlight', cat==='flasche');
-}
-
 // ── PRODUCT MODAL ──
 function openProduct(id){
   currentProduct = PRODUCTS.find(p=>p.id===id);
   if(!currentProduct) return;
-  selectedOption = 0;
   selectedAddons = defaultAddons(currentProduct);
+  selectedQty = 1;
+  selectedProducts = {};
+  siblingsOf(currentProduct).forEach(p => { selectedProducts[p.id] = {checked: p.id === currentProduct.id, option: 0}; });
   renderModal();
   document.getElementById('productModal').classList.add('open');
   document.body.style.overflow='hidden';
@@ -1326,7 +1445,15 @@ window.addEventListener('popstate', function(){
   else if(document.getElementById('impressumModal').classList.contains('open')) closeLegal('impressumModal');
   else if(document.getElementById('datenschutzModal').classList.contains('open')) closeLegal('datenschutzModal');
   else if(document.getElementById('agbModal').classList.contains('open')) closeLegal('agbModal');
+  else if(currentCat !== null && !(history.state && history.state.shopCat)) showOverview(false);
+  else if(history.state && history.state.shopCat && history.state.shopCat !== currentCat) openCategory(history.state.shopCat, false);
 });
+
+// Produkte derselben Kategorie mit identischem Zubehör – die lassen sich im selben Fenster mitwählen
+function siblingsOf(p){
+  const sig = JSON.stringify(p.addons || []);
+  return PRODUCTS.filter(x => x.cat === p.cat && JSON.stringify(x.addons || []) === sig);
+}
 
 function openLegal(id){
   document.getElementById(id).classList.add('open');
@@ -1374,6 +1501,7 @@ function renderModal(){
     imgDiv.innerHTML = `<div style="transform:scale(1.4)">${bottleSVG(p.icon,p.cat)}</div>`;
   }
 
+  const sibs = siblingsOf(p);
   const addonGroups = (p.addons || []).map((g, gi) => `
     <div class="modal-option-label">${g.label}${g.type === 'single' ? ' wählen' : ''}</div>
     <div class="variant-selector addon-group" data-group="${gi}">
@@ -1400,21 +1528,78 @@ function renderModal(){
     ${getUsageTip(p) ? `<p class="modal-tip">${getUsageTip(p)}</p>` : ''}
     ${getNote(p) ? `<p class="modal-note">${getNote(p)}</p>` : ''}
     <div class="modal-divider"></div>
-    ${p.option ? `
+    ${addonGroups}
+    <div class="modal-option-label">Anzahl${sibs.length > 1 ? ' (je Produkt)' : ''}</div>
+    <div class="qty-picker">
+      <button type="button" class="qty-btn" onclick="changeModalQty(-1)">−</button>
+      <span class="qty-num" id="modalQty">${selectedQty}</span>
+      <button type="button" class="qty-btn" onclick="changeModalQty(1)">+</button>
+    </div>
+    ${sibs.length > 1 ? `
+      <div class="modal-option-label">Produkte wählen <span class="modal-option-hint">· gleiches Zubehör, gleiche Anzahl</span></div>
+      <div class="pick-list" id="pickList">
+        ${sibs.map(x => `
+          <div class="pick-row ${selectedProducts[x.id].checked ? 'selected' : ''}" data-pid="${x.id}">
+            <label class="pick-main">
+              <input type="checkbox" ${selectedProducts[x.id].checked ? 'checked' : ''} onchange="togglePick('${x.id}', this.checked)">
+              <img class="pick-thumb" alt="" data-pid="${x.id}" onclick="event.preventDefault();showPickImage('${x.id}')">
+              <span class="pick-name">${x.name}</span>
+              <span class="pick-price">${fmt(x.price)}</span>
+            </label>
+            ${x.option ? `<select class="pick-option" onchange="pickOption('${x.id}', this.value)" aria-label="${x.option.label}">
+              ${x.option.choices.map((c,i)=>`<option value="${i}">${x.option.label}: ${c}</option>`).join('')}
+            </select>` : ''}
+          </div>`).join('')}
+      </div>
+    ` : (p.option ? `
       <div class="modal-option-label">${p.option.label} wählen</div>
       <div class="variant-selector">
         ${p.option.choices.map((c,i)=>`
           <label class="variant-option opt-option ${i===0?'selected':''}">
-            <input type="radio" name="prodoption" value="${i}" ${i===0?'checked':''} onchange="selectOption(${i})">
+            <input type="radio" name="prodoption" value="${i}" ${i===0?'checked':''} onchange="pickOption('${p.id}', ${i})">
             <span class="variant-option-name">${c}</span>
           </label>
         `).join('')}
       </div>
-    ` : ''}
-    ${addonGroups}
+    ` : '')}
     <button class="modal-add-btn" id="modalAddBtn" onclick="addToCart()">In den Warenkorb</button>
   `;
+  document.querySelectorAll('#pickList img[data-pid]').forEach(img => {
+    const x = PRODUCTS.find(y => y.id === img.dataset.pid);
+    if(x) img.src = getImgSrc(x);
+  });
   updateModalPrice();
+}
+
+function showPickImage(pid){
+  const x = PRODUCTS.find(y => y.id === pid);
+  const main = document.querySelector('#modalImg .modal-main-img');
+  if(x && main){
+    main.src = getImgSrc(x);
+    document.querySelectorAll('#modalImg .modal-thumb').forEach(e=>e.classList.remove('active'));
+  }
+}
+
+function changeModalQty(delta){
+  selectedQty = Math.min(20, Math.max(1, selectedQty + delta));
+  document.getElementById('modalQty').textContent = selectedQty;
+  updateModalPrice();
+}
+
+function togglePick(pid, on){
+  if(selectedProducts[pid]) selectedProducts[pid].checked = on;
+  const row = document.querySelector(`.pick-row[data-pid="${pid}"]`);
+  if(row) row.classList.toggle('selected', on);
+  updateModalPrice();
+}
+
+function pickOption(pid, idx){
+  if(selectedProducts[pid]) selectedProducts[pid].option = +idx;
+  document.querySelectorAll('.opt-option').forEach((el,i)=>el.classList.toggle('selected',i===+idx));
+}
+
+function pickedProducts(){
+  return siblingsOf(currentProduct).filter(x => selectedProducts[x.id] && selectedProducts[x.id].checked);
 }
 
 function updateModalPrice(){
@@ -1432,8 +1617,16 @@ function updateModalPrice(){
   } else {
     bd.style.display = 'none';
   }
+  const picked = pickedProducts();
+  const sum = picked.reduce((s,x)=>s + unitPrice(x, addons) * selectedQty, 0);
+  const pieces = picked.length * selectedQty;
   const btn = document.getElementById('modalAddBtn');
-  if(btn) btn.textContent = `In den Warenkorb · ${fmt(total)}`;
+  if(btn){
+    btn.disabled = picked.length === 0;
+    btn.textContent = picked.length === 0
+      ? 'Bitte mindestens ein Produkt wählen'
+      : `In den Warenkorb · ${pieces} ${pieces === 1 ? 'Stück' : 'Stück'} · ${fmt(sum)}`;
+  }
 }
 
 function toggleAddon(gi, oi, on){
@@ -1449,11 +1642,6 @@ function toggleAddon(gi, oi, on){
   updateModalPrice();
 }
 
-function selectOption(idx){
-  selectedOption = idx;
-  document.querySelectorAll('.opt-option').forEach((el,i)=>el.classList.toggle('selected',i===idx));
-}
-
 function closeModal(){
   document.getElementById('productModal').classList.remove('open');
   document.body.style.overflow='';
@@ -1464,27 +1652,34 @@ function closeModal(){
 function quickAdd(id){
   const p = PRODUCTS.find(x=>x.id===id);
   if(!p) return;
-  addItemToCart(p, p.option ? p.option.choices[0] : '', chosenAddons(p, defaultAddons(p)));
+  addItemToCart(p, p.option ? p.option.choices[0] : '', chosenAddons(p, defaultAddons(p)), 1);
+  showToast(p.name + ' hinzugefügt');
 }
 
 // ── ADD TO CART ──
 function addToCart(){
-  const option = currentProduct.option ? currentProduct.option.choices[selectedOption] : '';
-  addItemToCart(currentProduct, option, chosenAddons(currentProduct, selectedAddons));
+  const picked = pickedProducts();
+  if(!picked.length) return;
+  const addons = chosenAddons(currentProduct, selectedAddons);
+  picked.forEach(x => {
+    const option = x.option ? x.option.choices[selectedProducts[x.id].option] : '';
+    addItemToCart(x, option, addons, selectedQty);
+  });
+  const pieces = picked.length * selectedQty;
+  showToast(picked.length === 1 ? `${picked[0].name} hinzugefügt` : `${pieces} Stück hinzugefügt`);
   closeModal();
 }
 
-function addItemToCart(product, option, addons){
+function addItemToCart(product, option, addons, qty){
   const key = product.id + '|' + option + '|' + addons.map(a=>a.name).join(',');
   const existing = cart.find(i=>i.key===key);
   if(existing){
-    existing.qty++;
+    existing.qty += qty;
   } else {
-    cart.push({key, productId:product.id, option, addons, qty:1,
+    cart.push({key, productId:product.id, option, addons, qty,
       name:product.name, base:product.price, price:unitPrice(product, addons), icon:product.icon});
   }
   saveCart();
-  showToast(product.name + ' hinzugefügt');
   updateCartUI();
 }
 
@@ -1727,7 +1922,7 @@ window.addEventListener('scroll', () => navEl.classList.toggle('scrolled', windo
 function initReveal(){
   if(!('IntersectionObserver' in window)) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const els = document.querySelectorAll('.product-card,.highlight-item,.step,.number-item,.shop-header,.story-text,.story-visual,.review-box,.contact-info,.contact-form');
+  const els = document.querySelectorAll('.cat-tile,.highlight-item,.step,.number-item,.shop-header,.story-text,.story-visual,.review-box,.contact-info,.contact-form');
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => {
       if(!e.isIntersecting) return;
@@ -1745,7 +1940,7 @@ function initReveal(){
 }
 
 // ── INIT ──
-renderShop();
+renderOverview();
 updateCartUI();
 initStars();
 initReveal();
