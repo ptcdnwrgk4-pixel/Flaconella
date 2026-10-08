@@ -25,12 +25,27 @@ fonts/          Schriften (lokal, kein Google-Fonts-Aufruf)
 3. **Versandpauschale prüfen:** `const SHIPPING = {...}` in `index.html` (aktuell 6,90 € Versand, Abholung kostenlos).
    Der Betrag erscheint automatisch in Warenkorb, Kasse, PayPal und AGB.
 
-## Upload per SFTP
+## Automatischer Upload (GitHub Actions)
 
-1. IONOS → Hosting → Webhosting Plus → **SFTP/SSH-Zugang** → Zugangsdaten anlegen oder anzeigen.
-2. Mit einem SFTP-Programm (z. B. Cyberduck, FileZilla) verbinden: Host `access-…ionos.de` (steht im Kundenkonto), Port 22.
-3. In das Webspace-Verzeichnis wechseln, das der Domain zugeordnet ist (Standard: Hauptverzeichnis, siehe Schritt „Domain verbinden“).
-4. Alle oben genannten Dateien und Ordner hochladen. Beim Aktualisieren reicht es, geänderte Dateien zu ersetzen.
+Der Workflow `.github/workflows/deploy.yml` lädt bei jedem Push auf `main` alles außer den Repo-internen
+Dateien (siehe `.deployignore`) per SFTP in den IONOS-Webspace. Nur geänderte Dateien werden übertragen,
+auf dem Server wird nichts gelöscht.
+
+Einmalig einrichten:
+
+1. IONOS → Hosting → Webhosting Plus → **SFTP/SSH-Zugang**: Zugangsdaten anzeigen (Host, Benutzer) und ein Passwort setzen.
+2. GitHub → Repository `Flaconella` → **Settings → Secrets and variables → Actions → New repository secret**:
+   - `IONOS_SFTP_HOST` – der Host aus IONOS, z. B. `access-5017xxxxxx.webspace-host.com`
+   - `IONOS_SFTP_USER` – der SFTP-Benutzername
+   - `IONOS_SFTP_PASSWORD` – das Passwort
+   - `IONOS_TARGET_DIR` – nur nötig, wenn die Domain nicht auf das Hauptverzeichnis `/` zeigt
+3. Branch in `main` mergen oder unter **Actions → Deploy zu IONOS → Run workflow** manuell starten.
+4. Im Lauf steht die Liste der hochgeladenen Dateien und am Ende die Antwort von `https://flaconella.de`.
+
+## Upload von Hand (Alternative)
+
+Mit einem SFTP-Programm (z. B. Cyberduck, FileZilla) auf denselben Host (Port 22) verbinden und die oben
+genannten Dateien und Ordner in das Webspace-Verzeichnis legen, das der Domain zugeordnet ist.
 
 ## Domain verbinden
 
