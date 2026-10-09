@@ -8,3 +8,5 @@ DEPLOY.md
 version.txt
 dist/
 brand/
+src/
+build.mjs

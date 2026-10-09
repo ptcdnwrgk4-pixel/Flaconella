@@ -40,6 +40,14 @@ jobs:
             exit 1
           fi
 
+      - name: Node einrichten
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Seiten erzeugen
+        run: node build.mjs
+
       - name: Upload-Verzeichnis zusammenstellen
         run: |
           mkdir -p dist

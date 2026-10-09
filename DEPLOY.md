@@ -2,27 +2,33 @@
 
 ## Was hochgeladen wird
 
-Alles aus diesem Repository außer `.git`, `README.md`, `version.txt`, `DEPLOY.md` und `.nojekyll`:
+Alles aus diesem Repository außer den in `.deployignore` genannten Dateien (`.git`, `.github`, `README.md`,
+`DEPLOY.md`, `version.txt`, `brand/`, `src/`, `build.mjs`):
 
 ```
-index.html      die Seite
-order.php       Bestell-, Kontakt- und Bewertungs-Mailer
-.htaccess       HTTPS-Weiterleitung, Caching, Sicherheits-Header
-favicon.png
-robots.txt
-sitemap.xml
-images/         Produktfotos, Collagen, Logo, og.jpg
-fonts/          Schriften (lokal, kein Google-Fonts-Aufruf)
+index.html                  Startseite
+flaschen/ windlichter/ kerzen/ sets/      Kategorieseiten (je index.html)
+impressum/ datenschutz/ agb/ widerruf/    Rechtstexte (je index.html)
+css/style.css               Stylesheet
+js/products.js js/shop.js   Produktdaten und Shop-Logik
+order.php                   Bestell-, Kontakt- und Bewertungs-Mailer
+.htaccess                   HTTPS-Weiterleitung, Caching, Sicherheits-Header
+favicon.png  robots.txt  sitemap.xml
+images/                     Produktfotos, Collagen, Logo, og.jpg
+fonts/                      Schriften (lokal, kein Google-Fonts-Aufruf)
 ```
+
+Die HTML-Seiten werden mit `node build.mjs` aus `src/pages/` und `js/products.js` erzeugt. Der Workflow
+führt den Build vor dem Upload selbst aus.
 
 ## Vor dem ersten Upload
 
 1. **Postfach anlegen:** In IONOS → E-Mail → `hallo@flaconella.de` als echtes Postfach (Mail Basic) anlegen.
    `order.php` sendet mit dieser Adresse als Absender; IONOS verwirft Mails mit fremdem Absender.
-2. **PayPal-Live-Client-ID eintragen:** In `index.html` die Zeile `const PAYPAL_CLIENT_ID = 'sb';` durch die
+2. **PayPal-Live-Client-ID eintragen:** In `js/products.js` die Zeile `const PAYPAL_CLIENT_ID = 'sb';` durch die
    Live-Client-ID aus dem PayPal-Business-Konto ersetzen (developer.paypal.com → Apps & Credentials → Live).
    Solange `'sb'` eingetragen ist, läuft PayPal im Testmodus und zeigt das im Shop an.
-3. **Versandpauschale prüfen:** `const SHIPPING = {...}` in `index.html` (aktuell 6,90 € Versand, Abholung kostenlos).
+3. **Versandpauschale prüfen:** `const SHIPPING = {...}` in `js/products.js` (aktuell 6,90 € Versand, Abholung kostenlos).
    Der Betrag erscheint automatisch in Warenkorb, Kasse, PayPal und AGB.
 
 ## Automatischer Upload (GitHub Actions)
@@ -55,7 +61,7 @@ genannten Dateien und Ordner in das Webspace-Verzeichnis legen, das der Domain z
 
 ## Testen nach dem Upload
 
-1. `https://flaconella.de` öffnen – Seite, Bilder, Schriften, Kategorie-Kacheln prüfen.
+1. `https://flaconella.de` öffnen – Startseite, dann `/windlichter/` und `/impressum/`: Bilder, Schriften, Produktfenster prüfen.
 2. Testbestellung per Überweisung: Bestellung muss im Postfach `hallo@flaconella.de` ankommen, Kundin erhält Eingangsbestätigung.
 3. Kontaktformular und Bewertung einmal absenden.
 4. PayPal: mit Sandbox (`'sb'`) einen Durchlauf machen, dann Live-ID eintragen und mit 1 € Testprodukt real testen oder direkt den ersten echten Kauf beobachten.
@@ -63,5 +69,6 @@ genannten Dateien und Ordner in das Webspace-Verzeichnis legen, das der Domain z
 
 ## Spätere Änderungen
 
-Produkte, Preise, Texte und Zubehör stehen in `index.html` im Abschnitt `PRODUCTS` bzw. den Konstanten darüber.
-Neue Fotos als WebP in `images/` legen und im Produkt eintragen. Danach `index.html` (und ggf. Bilder) erneut hochladen.
+Produkte, Preise, Aufsätze und Versand stehen in `js/products.js`. Seitentexte (Startseite, Rechtstexte) in `src/pages/`.
+Neue Fotos als WebP in `images/` legen und im Produkt eintragen. Danach `node build.mjs` ausführen, committen und auf
+`main` pushen – der Workflow lädt alles hoch. Für Instagram-Links: `https://flaconella.de/windlichter/#windlicht-traube`.
