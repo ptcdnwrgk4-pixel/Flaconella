@@ -11,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const {CATEGORIES, PRODUCTS, SHIPPING, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS, GIFT_ADDON} = require('./js/products.js');
+const {CATEGORIES, PRODUCTS, SHIPPING, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS} = require('./js/products.js');
 const SITE = 'https://flaconella.de';
 const page = name => readFileSync(join(ROOT, 'src/pages', name), 'utf8');
 const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
@@ -40,12 +40,12 @@ const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox=
 // Fotoliste: welche Aufsatz-Fotos es gibt und welche fehlen
 {
   const rows = [], missing = [];
-  const allKeys = AUFSATZ.map(o => o.key).concat(['geschenkkarton']);
+  const allKeys = AUFSATZ.map(o => o.key);
   rows.push('# Fotoliste Flaconella', '', `Automatisch erzeugt von \`node build.mjs\` am ${new Date().toISOString().slice(0,10)}. Fotos in \`images/aufsatz/\` legen und neu bauen.`, '',
     '## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)', '', 'Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.', '',
     '| Aufsatz | Kürzel | Foto |', '|---|---|---|');
   for (const k of allKeys) {
-    const name = k === 'geschenkkarton' ? 'Geschenkkarton' : AUFSATZ.find(o => o.key === k).name;
+    const name = AUFSATZ.find(o => o.key === k).name;
     const have = BILDER.beispiel[k];
     if (!have) missing.push(`${k}.webp`);
     rows.push(`| ${name} | \`${k}\` | ${have ? 'vorhanden: `' + have + '`' : '**fehlt**'} |`);
@@ -267,7 +267,7 @@ function categoryPage(c){
   const promises = [
     c.key === 'windlicht' ? ['Teelicht & Untersetzer inklusive','Warmweißes Wachsteelicht mit Batterie, kein offenes Feuer nötig.'] :
     c.key === 'kerze' ? ['Handgegossen','Bienen- oder Gelwachs, rund 35 Stunden Brenndauer.'] :
-    c.key === 'set' ? ['Set-Vorteil','Günstiger als die Einzelstücke, auf Wunsch im Geschenkkarton.'] :
+    c.key === 'set' ? ['Set-Vorteil','Günstiger als die Einzelstücke, ideal zum Verschenken.'] :
     ['Aufsatz nach Wahl','Korken inklusive. Dekokorken, Lichterkette, Lampenschirm oder Kerzenaufsatz dazuwählen.'],
     ['Rand von Hand geschliffen','Jede Kante wird dreimal geprüft, bevor das Stück in den Karton geht.'],
     ['In 3–5 Werktagen bei dir',`Versand mit DHL für ${fmt(SHIPPING.versand.price)} oder kostenlos abholen in Dieburg.`],

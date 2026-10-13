@@ -21,9 +21,6 @@ const FREE_SHIPPING_FROM = 0; // Warenwert, ab dem der Versand entfällt (0 = ni
 // hat seinen eigenen Preis und wird im Produkt-Fenster dazugewählt.
 const BOTTLE_BASE = 24.90;
 
-const GIFT_ADDON = {label:'Extras', type:'multi', options:[
-  {key:'geschenkkarton', name:'Geschenkkarton', price:10},
-]};
 const BOTTLE_ADDONS = [
   {label:'Aufsatz · Verschluss, Licht oder Kerze', type:'single', options:[
     {key:'korken', name:'Korken', price:0, note:'inklusive'},
@@ -32,7 +29,6 @@ const BOTTLE_ADDONS = [
     {key:'lampenschirm', name:'Lampenschirm mit Licht', price:14},
     {key:'kerzenaufsatz', name:'Kerzenaufsatz mit Wachskerze', price:14},
   ]},
-  GIFT_ADDON,
 ];
 // Set aus zwei Flaschen: Aufsatz gilt für beide, Preis doppelt.
 const BOTTLE_DUO_ADDONS = [
@@ -43,7 +39,6 @@ const BOTTLE_DUO_ADDONS = [
     {key:'lampenschirm', name:'Lampenschirm mit Licht', price:28},
     {key:'kerzenaufsatz', name:'Kerzenaufsatz mit Wachskerze', price:28},
   ]},
-  GIFT_ADDON,
 ];
 
 // ── FOTOS ZU DEN AUFSÄTZEN ──
@@ -65,7 +60,6 @@ const AUFSATZ_ICONS = {
   lichterkette:  '<path d="M10 2.5h4v4h-4z"/><path d="M9.5 6.5h5l2 4v11h-9v-11z"/><path d="M9 12c2 1 4-1 6 0M9 16c2 1 4-1 6 0" stroke-dasharray="1 1.6"/>',
   lampenschirm:  '<path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/>',
   kerzenaufsatz: '<path d="M12 1.8c1.3 1.6 1.3 2.8 0 3.8-1.3-1-1.3-2.2 0-3.8z"/><path d="M10.6 6h2.8v6h-2.8z"/><path d="M8 12h8"/><path d="M10.2 12v2.2L8.5 17v4.5h7V17l-1.7-2.8V12"/>',
-  geschenkkarton:'<rect x="3.5" y="9" width="17" height="12"/><path d="M2.5 6h19v3h-19zM12 6v15"/><path d="M12 6C10.5 2.5 6.5 3 7.5 6M12 6c1.5-3.5 5.5-3 4.5 0"/>',
 };
 
 // ── KATEGORIEN ── (slug = Adresse der Seite, z. B. flaconella.de/windlichter/)
@@ -79,7 +73,7 @@ const CATEGORIES = [
   {key:'windlicht', slug:'windlichter', name:'Windlichter', priceHint:'39,00 €',
    desc:'Geschnitten, graviert, Teelicht und Untersetzer inklusive.',
    intro:'Geschnittene Weinflaschen mit geschliffenem Rand und Gravur. Das Teelicht bringt das Motiv zum Leuchten. Warmweißes Wachsteelicht mit Batterie und Untersetzer sind dabei.',
-   box:['39,00 €','Fester Preis für jedes Windlicht · Geschenkkarton +10 € · 3 Modelle, je nach Flasche in zwei Motiven'],
+   box:['39,00 €','Fester Preis für jedes Windlicht · Teelicht und Untersetzer inklusive · 3 Modelle, je nach Flasche in zwei Motiven'],
    seoTitle:'Windlichter aus Weinflaschen mit Gravur',
    seoDesc:'Windlichter aus geschnittenen Weinflaschen, von Hand geschliffen und graviert. 39 € inklusive Teelicht und Untersetzer. Aus dem Padella Vino Dieburg.'},
   {key:'kerze',     slug:'kerzen',      name:'Kerzen',      priceHint:'ab 25,00 €',
@@ -91,7 +85,7 @@ const CATEGORIES = [
   {key:'set',       slug:'sets',        name:'Sets',        priceHint:'ab 44,90 €',
    desc:'Paare und Trios mit Set-Vorteil, zum Beispiel drei Kerzenhalter-Flaschen.',
    intro:'Kuratierte Paare und Trios mit Set-Vorteil. Als Geschenk oder für den gedeckten Tisch.',
-   box:['ab 44,90 €','Duo-Set Flasche XL 44,90 € · Kerzenhalter 3er-Set 109 € · Geschenkkarton +10 €'],
+   box:['ab 44,90 €','Duo-Set Flasche XL 44,90 € · Kerzenhalter 3er-Set 109 €'],
    seoTitle:'Sets aus gravierten Flaschen',
    seoDesc:'Flaconella-Sets mit Set-Vorteil: Duo-Set Flasche XL und 3er-Set Kerzenhalter aus gravierten Flaschen. Handgemacht in Dieburg.'},
 ];
@@ -180,7 +174,7 @@ const PRODUCTS = [
     image:'/images/braune_flasche_windlicht_blumen_01.webp',
     gallery:['/images/braune_flasche_windlicht_blumen_01.webp','/images/schwarze_flasche_windlicht_beeren_01.webp','/images/braune_flasche_windlicht_blumen_02.webp','/images/braune_flasche_windlicht_blumen_03.webp'],
     option:{label:'Motiv', choices:['Trauben-Motiv (braun)','Beeren-Motiv (schwarz)']},
-    price:39, addons:[GIFT_ADDON]
+    price:39
   },
   {
     id:'w2', cat:'windlicht', slug:'windlicht-noir', label:'Windlicht',
@@ -189,7 +183,7 @@ const PRODUCTS = [
     desc:'Dunkle Bordeaux-Flasche mit geschliffenem Rand und eingraviertem Blütenmuster – das Licht des Teelichts bringt die Gravur erst richtig zur Geltung. Elegante Optik für einen Esstisch mit Stil. Warmweißes Wachsteelicht mit Batterie und Untersetzer inklusive.',
     image:'/images/schwarze_flasche_windlicht_blumen_01.webp',
     gallery:['/images/schwarze_flasche_windlicht_blumen_01.webp','/images/schwarze_flasche_windlicht_blumen_02.webp','/images/schwarze_flasche_windlicht_blumen_03.webp'],
-    price:39, addons:[GIFT_ADDON]
+    price:39
   },
   {
     id:'w4', cat:'windlicht', slug:'windlicht-ambra', label:'Windlicht',
@@ -198,7 +192,7 @@ const PRODUCTS = [
     desc:'Ein warmes Bernsteinglas mit feiner floraler Gravur – ruhig, edel, zeitlos. Das Kerzenlicht bringt die Gravur zum Leuchten und setzt einen behaglichen Akzent, ohne laut zu sein.',
     image:'/images/braunes_glas_windlicht_gravur_01.webp',
     gallery:['/images/braunes_glas_windlicht_gravur_01.webp','/images/braunes_glas_windlicht_gravur_02.webp'],
-    price:39, addons:[GIFT_ADDON]
+    price:39
   },
 
   // ── KERZEN ──
@@ -229,7 +223,7 @@ const PRODUCTS = [
     desc:'Drei gravierte Flaschen mit Kerzenaufsatz und Wachskerze – als Trio auf dem Esstisch, der Fensterbank oder dem Sideboard. Im Set 7,70 € günstiger als drei einzelne Flaschen mit Kerzenaufsatz.',
     badge:'Set-Vorteil',
     image:'/images/kerzenhalter_set_3er_02.webp',
-    price:109, addons:[GIFT_ADDON]
+    price:109
   },
   {
     id:'set-duo', cat:'set', slug:'duo-set-flasche-xl', label:'Set',
@@ -243,5 +237,5 @@ const PRODUCTS = [
 ];
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {SHOP_EMAIL, ORDER_ENDPOINT, PAYPAL_CLIENT_ID, SHIPPING, FREE_SHIPPING_FROM, BOTTLE_BASE, CATEGORIES, PRODUCTS, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS, GIFT_ADDON};
+  module.exports = {SHOP_EMAIL, ORDER_ENDPOINT, PAYPAL_CLIENT_ID, SHIPPING, FREE_SHIPPING_FROM, BOTTLE_BASE, CATEGORIES, PRODUCTS, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS};
 }

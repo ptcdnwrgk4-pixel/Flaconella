@@ -13,7 +13,6 @@ Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, sol
 | LED-Lichterkette im Korken | `lichterkette` | vorhanden: `/images/lampe-hexagonal.webp` |
 | Lampenschirm mit Licht | `lampenschirm` | **fehlt** |
 | Kerzenaufsatz mit Wachskerze | `kerzenaufsatz` | vorhanden: `/images/kerzenhalter_set_3er_02.webp` |
-| Geschenkkarton | `geschenkkarton` | **fehlt** |
 
 ## Eigenes Foto je Flasche und Aufsatz (empfohlen)
 
