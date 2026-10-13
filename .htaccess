@@ -35,6 +35,6 @@ DirectoryIndex index.html
 </IfModule>
 
 # Interne Dateien nicht ausliefern
-<FilesMatch "^(README\.md|version\.txt|DEPLOY\.md|\.nojekyll|build\.mjs|\.deployignore)$">
+<FilesMatch "^(README\.md|version\.txt|DEPLOY\.md|\.nojekyll|build\.mjs|\.deployignore|FOTOLISTE\.md)$">
   Require all denied
 </FilesMatch>

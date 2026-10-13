@@ -3,7 +3,7 @@
 // Baut aus src/pages/*.html, js/products.js und der Vorlage unten alle HTML-Seiten
 // (Startseite, 4 Kategorieseiten, 4 Rechtstexte) sowie sitemap.xml.
 // Aufruf: node build.mjs   – läuft auch im GitHub-Workflow vor dem Upload.
-import {readFileSync, writeFileSync, mkdirSync} from 'node:fs';
+import {readFileSync, writeFileSync, mkdirSync, readdirSync, existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {dirname, join} from 'node:path';
@@ -11,7 +11,7 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const {CATEGORIES, PRODUCTS, SHIPPING} = require('./js/products.js');
+const {CATEGORIES, PRODUCTS, SHIPPING, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS, GIFT_ADDON} = require('./js/products.js');
 const SITE = 'https://flaconella.de';
 const page = name => readFileSync(join(ROOT, 'src/pages', name), 'utf8');
 const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
@@ -19,6 +19,50 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 const productsIn = cat => PRODUCTS.filter(p => p.cat === cat);
 const ver = file => createHash('sha1').update(readFileSync(join(ROOT, file))).digest('hex').slice(0, 8);
 const V = {css: ver('css/style.css'), products: ver('js/products.js'), shop: ver('js/shop.js')};
+
+// ── Fotos zu den Aufsätzen: aus products.js und dem Ordner images/aufsatz/ ──
+const AUFSATZ_DIR = join(ROOT, 'images/aufsatz');
+const IMG_EXT = /\.(webp|jpe?g|png)$/i;
+const folderFiles = existsSync(AUFSATZ_DIR) ? readdirSync(AUFSATZ_DIR).filter(f => IMG_EXT.test(f)) : [];
+const BILDER = {beispiel: {...AUFSATZ_BEISPIEL}, produkt: {}};
+for (const f of folderFiles) {
+  const base = f.replace(IMG_EXT, '');
+  const [a, b] = base.split('--');
+  if (b) (BILDER.produkt[a] ||= {})[b] = '/images/aufsatz/' + f;
+  else BILDER.beispiel[a] = '/images/aufsatz/' + f;
+}
+for (const p of PRODUCTS) if (p.aufsatzBilder) BILDER.produkt[p.slug] = {...p.aufsatzBilder, ...(BILDER.produkt[p.slug] || {})};
+writeFileSync(join(ROOT, 'js/bilder.js'), '// Automatisch erzeugt von build.mjs – nicht von Hand bearbeiten.\nconst BILDER = ' + JSON.stringify(BILDER, null, 1) + ';\n');
+const aufsatzGroup = p => (p.addons || []).find(g => g.type === 'single');
+const AUFSATZ = BOTTLE_ADDONS.find(g => g.type === 'single').options;
+const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true">${AUFSATZ_ICONS[key] || ''}</svg>`;
+
+// Fotoliste: welche Aufsatz-Fotos es gibt und welche fehlen
+{
+  const rows = [], missing = [];
+  const allKeys = AUFSATZ.map(o => o.key).concat(['geschenkkarton']);
+  rows.push('# Fotoliste Flaconella', '', `Automatisch erzeugt von \`node build.mjs\` am ${new Date().toISOString().slice(0,10)}. Fotos in \`images/aufsatz/\` legen und neu bauen.`, '',
+    '## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)', '', 'Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.', '',
+    '| Aufsatz | Kürzel | Foto |', '|---|---|---|');
+  for (const k of allKeys) {
+    const name = k === 'geschenkkarton' ? 'Geschenkkarton' : AUFSATZ.find(o => o.key === k).name;
+    const have = BILDER.beispiel[k];
+    if (!have) missing.push(`${k}.webp`);
+    rows.push(`| ${name} | \`${k}\` | ${have ? 'vorhanden: `' + have + '`' : '**fehlt**'} |`);
+  }
+  rows.push('', '## Eigenes Foto je Flasche und Aufsatz (empfohlen)', '', 'Dateiname `<produkt>--<kürzel>.webp`, z. B. `images/aufsatz/flasche-hexagon--lampenschirm.webp`.', '',
+    '| Produkt | ' + AUFSATZ.map(o => o.name).join(' | ') + ' |', '|---|' + AUFSATZ.map(() => '---').join('|') + '|');
+  for (const p of PRODUCTS.filter(aufsatzGroup)) {
+    const have = BILDER.produkt[p.slug] || {};
+    rows.push(`| ${p.name} | ` + AUFSATZ.map(o => have[o.key] ? '✓' : '–').join(' | ') + ' |');
+  }
+  rows.push('', '## So fotografieren', '', '- Hochformat 4:5, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund wie bei den bisherigen Fotos.',
+    '- Flasche mittig, gleiche Höhe und gleicher Abstand wie bei den anderen Fotos, damit die Bilder beim Umschalten nicht springen.',
+    '- Licht-Aufsätze (Lichterkette, Lampenschirm, Kerze) zusätzlich einmal eingeschaltet im Halbdunkel.',
+    '- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen.');
+  writeFileSync(join(ROOT, 'FOTOLISTE.md'), rows.join('\n') + '\n');
+  if (missing.length) console.log('Fehlende Beispielfotos:', missing.join(', '));
+}
 
 // ── Bausteine ──
 function header(active){
@@ -174,6 +218,7 @@ ${content}
 ${footer()}
 ${overlays}
 <script src="/js/products.js?v=${V.products}"></script>
+<script src="/js/bilder.js?v=${ver('js/bilder.js')}"></script>
 <script src="/js/shop.js?v=${V.shop}"></script>
 </body>
 </html>
@@ -188,13 +233,24 @@ const catTiles = () => CATEGORIES.map(c => `
       <p class="desc">${c.desc}</p>
     </a>`).join('');
 
+const fmtPlus = o => o.price > 0 ? '+ ' + fmt(o.price) : 'inklusive';
+const aufsatzTiles = () => AUFSATZ.map(o => {
+  const photo = BILDER.beispiel[o.key];
+  return `
+      <a href="/flaschen/" class="aufsatz-tile">
+        <span class="pic">${photo ? `<img src="${photo}" alt="Flasche mit ${esc(o.name)}" loading="lazy" width="300" height="375">` : `<span class="ill">${icon(o.key, 56)}</span><span class="soon">Foto folgt</span>`}</span>
+        <span class="row"><span class="ic">${icon(o.key, 18)}</span><span class="nm">${esc(o.name)}</span></span>
+        <span class="pr">${fmtPlus(o)}</span>
+      </a>`;
+}).join('');
+
 function productCard(p, small){
   const c = CATEGORIES.find(x => x.key === p.cat);
   const price = hasPaid(p) ? `${fmt(p.price)} <span style="color:var(--dim)">+ Aufsatz</span>` : fmt(p.price);
   const variants = p.option ? `<span class="product-variants">${p.option.choices.length} ${p.option.label === 'Motiv' ? 'Motive' : 'Ausführungen'}</span>` : '';
   return `
       <a href="/${c.slug}/#${p.slug}" class="product-card" data-pid="${p.id}" onclick="openProduct('${p.id}');return false;">
-        <span class="product-img">${p.badge ? `<span class="product-badge">${esc(p.badge)}</span>` : ''}<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" width="480" height="600"></span>
+        <span class="product-img">${p.badge ? `<span class="product-badge">${esc(p.badge)}</span>` : ''}<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" width="480" height="600">${!small && p.gallery && p.gallery[1] ? `<img class="alt" src="${p.gallery[1]}" alt="" loading="lazy" width="480" height="600">` : ''}</span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">${esc(p.name)}</span><span class="product-price">${price}</span></span>
           ${small ? '' : `<span class="product-tagline">${esc(p.tagline)}</span>${variants}`}
@@ -223,6 +279,7 @@ function categoryPage(c){
     <div><h1>${c.name}</h1><p class="intro">${c.intro}</p></div>
     <div class="price-box"><span class="big">${c.box[0]}</span><span class="sub">${c.box[1]}</span></div>
   </div>
+  <figure class="cat-banner"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)} von Flaconella" width="1200" height="720"></figure>
   <div class="chips-row">${CATEGORIES.map(x => `<a href="/${x.slug}/" class="chip-link${x.key===c.key?' on':''}">${x.name}</a>`).join('')}</div>
   <div class="grid-meta"><span>${items.length} ${items.length === 1 ? 'Produkt' : 'Produkte'}</span><span>Alle Preise inkl. MwSt.</span></div>
   <div class="product-grid">${items.map(p => productCard(p)).join('')}</div>
@@ -266,7 +323,7 @@ function write(path, html){
 write('/', layout({
   title:'Flaconella – Handgefertigte Deko aus recycelten Flaschen',
   description:'Flaschen, Windlichter und Kerzen aus den Wein- und Spirituosenflaschen des Padella Vino in Dieburg. Handgeschnitten, geschliffen, graviert. Versand oder Abholung.',
-  path:'/', content: page('start.html').replace('{{CAT_TILES}}', catTiles()), active:null,
+  path:'/', content: page('start.html').replace('{{CAT_TILES}}', catTiles()).replace('{{AUFSATZ_TILES}}', aufsatzTiles()), active:null,
 }));
 CATEGORIES.forEach(c => write(`/${c.slug}/`, categoryPage(c)));
 LEGAL.forEach(l => write(`/${l.slug}/`, legalPage(l)));

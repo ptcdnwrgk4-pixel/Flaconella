@@ -22,29 +22,51 @@ const FREE_SHIPPING_FROM = 0; // Warenwert, ab dem der Versand entfällt (0 = ni
 const BOTTLE_BASE = 24.90;
 
 const GIFT_ADDON = {label:'Extras', type:'multi', options:[
-  {name:'Geschenkkarton', price:10},
+  {key:'geschenkkarton', name:'Geschenkkarton', price:10},
 ]};
 const BOTTLE_ADDONS = [
   {label:'Aufsatz · Verschluss, Licht oder Kerze', type:'single', options:[
-    {name:'Korken', price:0, note:'inklusive'},
-    {name:'Dekokorken', price:4},
-    {name:'LED-Lichterkette im Korken', price:10},
-    {name:'Lampenschirm mit Licht', price:14},
-    {name:'Kerzenaufsatz mit Wachskerze', price:14},
+    {key:'korken', name:'Korken', price:0, note:'inklusive'},
+    {key:'dekokorken', name:'Dekokorken', price:4},
+    {key:'lichterkette', name:'LED-Lichterkette im Korken', price:10},
+    {key:'lampenschirm', name:'Lampenschirm mit Licht', price:14},
+    {key:'kerzenaufsatz', name:'Kerzenaufsatz mit Wachskerze', price:14},
   ]},
   GIFT_ADDON,
 ];
 // Set aus zwei Flaschen: Aufsatz gilt für beide, Preis doppelt.
 const BOTTLE_DUO_ADDONS = [
   {label:'Aufsatz für beide Flaschen', type:'single', options:[
-    {name:'Korken', price:0, note:'inklusive'},
-    {name:'Dekokorken', price:8},
-    {name:'LED-Lichterkette im Korken', price:20},
-    {name:'Lampenschirm mit Licht', price:28},
-    {name:'Kerzenaufsatz mit Wachskerze', price:28},
+    {key:'korken', name:'Korken', price:0, note:'inklusive'},
+    {key:'dekokorken', name:'Dekokorken', price:8},
+    {key:'lichterkette', name:'LED-Lichterkette im Korken', price:20},
+    {key:'lampenschirm', name:'Lampenschirm mit Licht', price:28},
+    {key:'kerzenaufsatz', name:'Kerzenaufsatz mit Wachskerze', price:28},
   ]},
   GIFT_ADDON,
 ];
+
+// ── FOTOS ZU DEN AUFSÄTZEN ──
+// Beispielfoto je Aufsatz (an irgendeiner Flasche). Wird im Produktfenster gezeigt, wenn es für
+// die gewählte Flasche noch kein eigenes Foto mit diesem Aufsatz gibt – dann mit dem Hinweis „Beispielfoto“.
+// Neue Fotos einfach in images/aufsatz/ legen, Dateiname = Aufsatz-Kürzel, z. B. images/aufsatz/lampenschirm.webp.
+// Eigene Fotos je Flasche: images/aufsatz/<produkt-slug>--<kürzel>.webp, z. B. flasche-hexagon--lampenschirm.webp.
+// build.mjs findet die Dateien selbst und schreibt eine Liste der noch fehlenden Fotos nach FOTOLISTE.md.
+const AUFSATZ_BEISPIEL = {
+  korken:        '/images/lampe-weinflasche-klar.webp',
+  lichterkette:  '/images/lampe-hexagonal.webp',
+  kerzenaufsatz: '/images/kerzenhalter_set_3er_02.webp',
+};
+
+// Kleine Strichzeichnungen der Aufsätze (für Auswahlkacheln und Startseite)
+const AUFSATZ_ICONS = {
+  korken:        '<path d="M9.5 2.5h5v5h-5z"/><path d="M9 7.5h6l1.5 3.5V21.5h-9V11z"/>',
+  dekokorken:    '<circle cx="12" cy="4.2" r="2.2"/><path d="M10.2 6.4h3.6v3h-3.6z"/><path d="M9 9.4h6l1.5 3V21.5h-9v-9z"/>',
+  lichterkette:  '<path d="M10 2.5h4v4h-4z"/><path d="M9.5 6.5h5l2 4v11h-9v-11z"/><path d="M9 12c2 1 4-1 6 0M9 16c2 1 4-1 6 0" stroke-dasharray="1 1.6"/>',
+  lampenschirm:  '<path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/>',
+  kerzenaufsatz: '<path d="M12 1.8c1.3 1.6 1.3 2.8 0 3.8-1.3-1-1.3-2.2 0-3.8z"/><path d="M10.6 6h2.8v6h-2.8z"/><path d="M8 12h8"/><path d="M10.2 12v2.2L8.5 17v4.5h7V17l-1.7-2.8V12"/>',
+  geschenkkarton:'<rect x="3.5" y="9" width="17" height="12"/><path d="M2.5 6h19v3h-19zM12 6v15"/><path d="M12 6C10.5 2.5 6.5 3 7.5 6M12 6c1.5-3.5 5.5-3 4.5 0"/>',
+};
 
 // ── KATEGORIEN ── (slug = Adresse der Seite, z. B. flaconella.de/windlichter/)
 const CATEGORIES = [
@@ -69,7 +91,7 @@ const CATEGORIES = [
   {key:'set',       slug:'sets',        name:'Sets',        priceHint:'ab 44,90 €',
    desc:'Paare und Trios mit Set-Vorteil, zum Beispiel drei Kerzenhalter-Flaschen.',
    intro:'Kuratierte Paare und Trios mit Set-Vorteil. Als Geschenk oder für den gedeckten Tisch.',
-   box:['ab 44,90 €','Duo-Set Flasche XL 44,90 € · 3er-Set Kerzenhalter 109 € · Geschenkkarton +10 €'],
+   box:['ab 44,90 €','Duo-Set Flasche XL 44,90 € · Kerzenhalter 3er-Set 109 € · Geschenkkarton +10 €'],
    seoTitle:'Sets aus gravierten Flaschen',
    seoDesc:'Flaconella-Sets mit Set-Vorteil: Duo-Set Flasche XL und 3er-Set Kerzenhalter aus gravierten Flaschen. Handgemacht in Dieburg.'},
 ];
@@ -86,6 +108,7 @@ const PRODUCTS = [
     image:'/images/lampe-bulgarini-classic.webp',
     gallery:['/images/lampe-bulgarini-classic.webp','/images/lampe-bulgarini-blueten.webp','/images/dekoflasche-botanik.webp'],
     option:{label:'Ausführung', choices:['Klassische Gravur','Blütenrelief']},
+    aufsatzBilder:{lichterkette:'/images/lampe-bulgarini-classic.webp'},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -97,6 +120,7 @@ const PRODUCTS = [
     image:'/images/lampe-hexagonal.webp',
     gallery:['/images/lampe-hexagonal.webp','/images/lampe-hexagonal-stimmung.webp','/images/lampe-eckig-botanik.webp'],
     option:{label:'Glas', choices:['Klarglas','Bernsteinglas']},
+    aufsatzBilder:{lichterkette:'/images/lampe-hexagonal.webp'},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -105,6 +129,7 @@ const PRODUCTS = [
     tagline:'Schlanke Flasche, poetische Gravur',
     desc:'Eine schlanke Flasche mit einer feinen Pusteblumen-Gravur – mit Lichterkette leuchten die einzelnen Samen auf. Poesie als Dekoobjekt, Karaffe oder Lampe.',
     image:'/images/lampe-pusteblume.webp',
+    aufsatzBilder:{lichterkette:'/images/lampe-pusteblume.webp'},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -113,6 +138,7 @@ const PRODUCTS = [
     tagline:'Schlanke, hohe Flasche mit markanter Form',
     desc:'Eine schlanke, hohe Flasche mit markanter Form – mit warmweißer Lichterkette leuchtet sie im Glas wie ein kleiner Sternenhimmel. Elegant, ruhig, unaufdringlich.',
     image:'/images/lampe-ramazotti.webp',
+    aufsatzBilder:{lichterkette:'/images/lampe-ramazotti.webp'},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -123,6 +149,7 @@ const PRODUCTS = [
     image:'/images/lampe-weinflasche.webp',
     gallery:['/images/lampe-weinflasche.webp','/images/lampe-weinflasche-klar.webp','/images/lampe-rotwein.webp'],
     option:{label:'Ausführung', choices:['Hell (klar)','Dunkel (olivgrün)']},
+    aufsatzBilder:{lichterkette:'/images/lampe-weinflasche.webp', korken:'/images/lampe-weinflasche-klar.webp'},
     price:BOTTLE_BASE, addons:BOTTLE_ADDONS
   },
   {
@@ -199,7 +226,7 @@ const PRODUCTS = [
     id:'set-k3', cat:'set', slug:'kerzenhalter-3er-set', label:'Set',
     name:'Kerzenhalter 3er-Set',
     tagline:'Drei Flaschen mit Kerzenaufsatz – Wachskerzen inklusive',
-    desc:'Drei gravierte Flaschen mit Kerzenaufsatz und Wachskerze – als Trio auf dem Esstisch, der Fensterbank oder dem Sideboard. Im Set 8 € günstiger als einzeln.',
+    desc:'Drei gravierte Flaschen mit Kerzenaufsatz und Wachskerze – als Trio auf dem Esstisch, der Fensterbank oder dem Sideboard. Im Set 7,70 € günstiger als drei einzelne Flaschen mit Kerzenaufsatz.',
     badge:'Set-Vorteil',
     image:'/images/kerzenhalter_set_3er_02.webp',
     price:109, addons:[GIFT_ADDON]
@@ -210,10 +237,11 @@ const PRODUCTS = [
     tagline:'Zwei große Weinflaschen – hell und dunkel',
     desc:'Die große Weinflasche XL in beiden Ausführungen: einmal klares Glas, einmal dunkles Olivglas. Zusammen ein Paar mit Kontrast. Den Aufsatz wählst du für beide Flaschen gemeinsam.',
     image:'/images/weinflasche-duo.webp',
+    aufsatzBilder:{korken:'/images/weinflasche-duo.webp'},
     price:44.90, addons:BOTTLE_DUO_ADDONS
   },
 ];
 
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {SHOP_EMAIL, ORDER_ENDPOINT, PAYPAL_CLIENT_ID, SHIPPING, FREE_SHIPPING_FROM, BOTTLE_BASE, CATEGORIES, PRODUCTS};
+  module.exports = {SHOP_EMAIL, ORDER_ENDPOINT, PAYPAL_CLIENT_ID, SHIPPING, FREE_SHIPPING_FROM, BOTTLE_BASE, CATEGORIES, PRODUCTS, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS, GIFT_ADDON};
 }

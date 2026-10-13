@@ -134,15 +134,17 @@ function renderModal(){
   imgDiv.innerHTML = '';
   const gallery = (p.gallery && p.gallery.length) ? p.gallery : (p.image ? [p.image] : []);
   if(gallery.length){
+    const wrap = document.createElement('div'); wrap.className = 'modal-photo';
     const main = document.createElement('img');
-    main.className = 'modal-main-img'; main.alt = p.name; main.src = gallery[0];
-    imgDiv.appendChild(main);
+    main.className = 'modal-main-img'; main.id = 'modalMainImg'; main.alt = p.name; main.src = gallery[0];
+    const tag = document.createElement('span'); tag.className = 'tag'; tag.id = 'modalPhotoTag'; tag.hidden = true;
+    wrap.appendChild(main); wrap.appendChild(tag); imgDiv.appendChild(wrap);
     if(gallery.length > 1){
       const strip = document.createElement('div'); strip.className = 'modal-thumbs';
       gallery.forEach((src, idx) => {
         const t = document.createElement('img');
         t.className = 'modal-thumb' + (idx===0 ? ' active' : ''); t.alt = p.name + ' Ansicht ' + (idx+1); t.src = src;
-        t.addEventListener('click', () => { main.src = src; strip.querySelectorAll('.modal-thumb').forEach(e=>e.classList.remove('active')); t.classList.add('active'); });
+        t.addEventListener('click', () => { main.src = src; tag.hidden = true; strip.querySelectorAll('.modal-thumb').forEach(e=>e.classList.remove('active')); t.classList.add('active'); });
         strip.appendChild(t);
       });
       imgDiv.appendChild(strip);
@@ -171,7 +173,8 @@ function renderModal(){
       <li>Abholung im Padella Vino, Markt 8, Dieburg kostenlos</li>
       <li>Unikat: Form und Gravur weichen leicht vom Foto ab</li>
     </ul>
-    <p class="modal-note">${esc(getNote(p))}</p>`;
+    <p class="modal-note">${esc(getNote(p))}</p>
+    <p class="modal-maker">Hersteller: Padella Vino · Inhaberin Sonja Peters · Markt 8 · 64807 Dieburg · ${esc(SHOP_EMAIL)}</p>`;
   renderOptions();
   updateModalPrice();
 }
@@ -190,7 +193,10 @@ function renderOptions(){
       ${g.options.map((o, oi) => {
         const on = (sel.addons[gi] || []).indexOf(oi) !== -1;
         const ptxt = o.price > 0 ? '+ ' + fmt(o.price) : (o.note || 'inklusive');
-        return `<button type="button" class="tile ${single?'radio':''} ${on?'on':''}" onclick="pickAddon(${gi},${oi})" aria-pressed="${on}"><span class="l"><span class="mark"></span>${esc(o.name)}</span><span class="r">${ptxt}</span></button>`;
+        const photo = single ? aufsatzPhoto(p, o.key) : null;
+        const ic = o.key && AUFSATZ_ICONS[o.key] ? `<span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true">${AUFSATZ_ICONS[o.key]}</svg></span>` : '';
+        const th = photo ? `<img class="thumb" src="${photo.src}" alt="" loading="lazy">` : '';
+        return `<button type="button" class="tile ${single?'radio':''} ${on?'on':''}" onclick="pickAddon(${gi},${oi})" aria-pressed="${on}"><span class="l"><span class="mark"></span>${ic}${esc(o.name)}</span><span class="l">${th}<span class="r">${ptxt}</span></span></button>`;
       }).join('')}
     </div></div>`;
   });
@@ -199,12 +205,32 @@ function renderOptions(){
   box.style.display = html ? 'flex' : 'none';
   box.style.flexDirection = 'column'; box.style.gap = '20px';
 }
+// Foto zum Aufsatz: erst das eigene Foto dieser Flasche, sonst ein Beispielfoto (mit Hinweis)
+function aufsatzPhoto(p, key){
+  if(typeof BILDER === 'undefined' || !key) return null;
+  const own = BILDER.produkt[p.slug] && BILDER.produkt[p.slug][key];
+  if(own) return {src:own, example:false};
+  const ex = BILDER.beispiel[key];
+  return ex ? {src:ex, example:true} : null;
+}
+function showAufsatzPhoto(gi){
+  const p = currentProduct, g = p.addons[gi];
+  const o = g.options[(sel.addons[gi] || [])[0]];
+  const main = document.getElementById('modalMainImg'), tag = document.getElementById('modalPhotoTag');
+  if(!main || !o) return;
+  const ph = aufsatzPhoto(p, o.key);
+  const short = o.name.split(' ')[0];
+  if(ph){ main.src = ph.src; tag.hidden = !ph.example; tag.textContent = 'Beispielfoto: ' + short + ' an einer anderen Flasche'; }
+  else { tag.hidden = false; tag.textContent = 'Foto mit ' + short + ' folgt'; }
+  document.querySelectorAll('#modalImg .modal-thumb').forEach(e => e.classList.remove('active'));
+}
 function pickOption(i){ sel.option = i; renderOptions(); }
 function pickAddon(gi, oi){
   const g = currentProduct.addons[gi];
   if(g.type === 'single') sel.addons[gi] = [oi];
   else { const cur = sel.addons[gi] || []; sel.addons[gi] = cur.indexOf(oi) === -1 ? cur.concat([oi]) : cur.filter(i => i !== oi); }
   renderOptions(); updateModalPrice();
+  if(g.type === 'single') showAufsatzPhoto(gi);
 }
 function modalQty(d){ sel.qty = Math.min(20, Math.max(1, sel.qty + d)); document.getElementById('modalQty').textContent = sel.qty; updateModalPrice(); }
 function updateModalPrice(){
@@ -275,7 +301,7 @@ function changeQty(key, delta){
   saveCart(); updateCartUI();
 }
 function removeItem(key){ cart = cart.filter(i=>i.key!==key); saveCart(); updateCartUI(); }
-function openCart(){ document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); syncScrollLock(); }
+function openCart(){ initPayPal(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); syncScrollLock(); }
 function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartSidebar').classList.remove('open'); syncScrollLock(); }
 
 // ── KASSE ──
@@ -317,6 +343,7 @@ function openCheckout(fromId){
   closeCart();
   if(!cart.length) return;
   setShipping(shippingKey);
+  initPayPal();
   if(fromId) swapOverlay(fromId, 'checkoutModal'); else openOverlay('checkoutModal');
   renderPayPalButton('paypalCheckout');
   updateExpressVisibility();
@@ -416,8 +443,11 @@ async function submitOrder(e){
 // ── PAYPAL EXPRESS-CHECKOUT ──
 let paypalLoaded = false, paypalPreview = false, paypalShipKey = 'versand';
 const paypalRendered = {};
+// PayPal wird erst geladen, wenn jemand Warenkorb oder Kasse mit Inhalt öffnet – vorher gehen keine Daten an PayPal.
+let paypalRequested = false;
 function initPayPal(){
-  if(!PAYPAL_CLIENT_ID) return;
+  if(!PAYPAL_CLIENT_ID || paypalRequested || !cart.length) return;
+  paypalRequested = true;
   const sc = document.createElement('script');
   sc.src = 'https://www.paypal.com/sdk/js?client-id=' + encodeURIComponent(PAYPAL_CLIENT_ID) + '&currency=EUR&locale=de_DE&intent=capture&components=buttons&disable-funding=credit,paylater';
   sc.onload = () => { paypalLoaded = true; renderPayPalButton('paypalCart'); updateExpressVisibility(); };
@@ -538,7 +568,6 @@ document.addEventListener('keydown', e => {
 // ── START ──
 history.replaceState(null, '');
 updateCartUI();
-initPayPal();
 // Direktlink auf ein Produkt: /windlichter/#windlicht-traube
 (function(){
   const slug = (location.hash || '').replace(/^#/, '');
