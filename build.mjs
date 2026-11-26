@@ -11,14 +11,14 @@ import {fileURLToPath} from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-const {CATEGORIES, PRODUCTS, SHIPPING, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS} = require('./js/products.js');
+const {CATEGORIES, PRODUCTS, SHIPPING, BOTTLE_BASE, AUFSATZ_BEISPIEL, AUFSATZ_ICONS, BOTTLE_ADDONS} = require('./js/products.js');
 const SITE = 'https://flaconella.de';
 const page = name => readFileSync(join(ROOT, 'src/pages', name), 'utf8');
 const fmt = n => n.toFixed(2).replace('.', ',') + ' €';
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const productsIn = cat => PRODUCTS.filter(p => p.cat === cat);
 const ver = file => createHash('sha1').update(readFileSync(join(ROOT, file))).digest('hex').slice(0, 8);
-const V = {css: ver('css/style.css'), products: ver('js/products.js'), shop: ver('js/shop.js')};
+const V = {css: ver('css/style.css'), products: ver('js/products.js'), shop: ver('js/shop.js'), motion: ver('js/motion.js')};
 
 // ── Fotos zu den Aufsätzen: aus products.js und dem Ordner images/aufsatz/ ──
 const AUFSATZ_DIR = join(ROOT, 'images/aufsatz');
@@ -66,21 +66,24 @@ const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox=
 
 // ── Bausteine ──
 function header(active){
-  const links = CATEGORIES.map(c => `<a href="/${c.slug}/"${active===c.key?' class="on"':''}>${c.name}</a>`).join('');
+  const links = CATEGORIES.map((c, i) => `<a href="/${c.slug}/" style="--i:${i}"${active===c.key?' class="on"':''}>${c.name}</a>`).join('');
+  const n = CATEGORIES.length;
   return `<header class="site-header">
   <div class="wrap header-inner">
     <button class="nav-burger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="siteNav" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     <a href="/" class="brand" aria-label="Flaconella Startseite"><img src="/images/logo.png" alt="" width="44" height="44"><span>Flaconella</span></a>
-    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">${links}<span class="nav-sep"></span><a href="/#story">Story</a><a href="/#kontakt">Kontakt</a></nav>
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation">${links}<span class="nav-sep"></span><a href="/#story" style="--i:${n}">Story</a><a href="/#kontakt" style="--i:${n+1}">Kontakt</a><div class="nav-extra" style="--i:${n+2}"><b>Padella Vino</b>Markt 8 · 64807 Dieburg<br>hallo@flaconella.de · 0173 3055042</div></nav>
     <button class="cart-btn" type="button" onclick="openCart()" aria-label="Warenkorb öffnen">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <span class="label">Warenkorb</span><span class="cart-badge">0</span>
     </button>
   </div>
+  <span class="scroll-progress" aria-hidden="true"></span>
 </header>`;
 }
 
 function footer(){
+  const word = 'Flaconella'.split('').map((ch, i) => `<span style="--i:${i}">${ch}</span>`).join('');
   return `<footer class="site-footer">
   <div class="wrap footer-grid">
     <div class="footer-brand">
@@ -96,7 +99,9 @@ function footer(){
     <div class="footer-col"><h4>Rechtliches</h4><ul><li><a href="/impressum/">Impressum</a></li><li><a href="/datenschutz/">Datenschutz</a></li><li><a href="/agb/">AGB</a></li><li><a href="/widerruf/">Widerruf</a></li></ul></div>
   </div>
   <div class="wrap footer-bottom"><span>© ${new Date().getFullYear()} Flaconella · Ein Projekt von <a href="https://padella-vino.de" target="_blank" rel="noopener" style="color:inherit">Padella Vino Dieburg</a></span><span>Versand ${fmt(SHIPPING.versand.price)} · Abholung kostenlos · PayPal oder Überweisung</span></div>
-</footer>`;
+  <div class="footer-word" aria-hidden="true">${word}</div>
+</footer>
+<button class="to-top" type="button" aria-label="Nach oben"><svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle class="t" cx="26" cy="26" r="25"/><circle class="p" cx="26" cy="26" r="25" pathLength="1"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>`;
 }
 
 // Warenkorb, Produkt-, Kassen- und Erfolgsfenster: auf jeder Seite vorhanden, Inhalt kommt aus shop.js
@@ -174,7 +179,10 @@ const overlays = `
 <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-label="Bestellung">
   <div class="success-modal">
     <button class="modal-close" type="button" aria-label="Schließen" onclick="closeSuccess()">✕</button>
-    <div class="success-icon">🍾</div>
+    <div class="success-icon" data-state="ok">
+      <svg class="ok" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M20 33l8 8 16-17" pathLength="1"/></svg>
+      <svg class="mail" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M18 24h28v18H18zM18 25l14 10 14-10" pathLength="1"/></svg>
+    </div>
     <h3 id="successTitle">Bestellung eingegangen!</h3>
     <p id="successText"></p>
     <div id="successPayment" style="width:100%"></div>
@@ -209,16 +217,32 @@ function layout({title, description, path, content, active, ogImage}){
 <link rel="preload" href="/fonts/Montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
 <link rel="stylesheet" href="/css/style.css?v=${V.css}">
+<script>
+(function(d){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches)d.classList.add('motion');
+  function mark(path){
+    document.querySelectorAll('a.cat-tile').forEach(function(a){
+      var img=a.querySelector('img');if(!img)return;
+      var r=img.getBoundingClientRect();
+      img.style.viewTransitionName=(new URL(a.href).pathname===path&&r.bottom>0&&r.top<innerHeight)?'kat-hero':'';
+    });
+  }
+  addEventListener('pageswap',function(e){if(!e.viewTransition||!e.activation||!e.activation.entry)return;try{mark(new URL(e.activation.entry.url).pathname)}catch(x){}});
+  addEventListener('pagereveal',function(e){if(!e.viewTransition||!window.navigation||!navigation.activation||!navigation.activation.from)return;try{mark(new URL(navigation.activation.from.url).pathname)}catch(x){}});
+})(document.documentElement);
+</script>
+<script type="speculationrules">{"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.php"}},{"not":{"selector_matches":".product-card"}}]},"eagerness":"moderate"}]}</script>
 </head>
 <body>
 ${header(active)}
 <main>
-${content}
+${splitWords(content)}
 </main>
 ${footer()}
 ${overlays}
 <script src="/js/products.js?v=${V.products}"></script>
 <script src="/js/bilder.js?v=${ver('js/bilder.js')}"></script>
+<script src="/js/motion.js?v=${V.motion}"></script>
 <script src="/js/shop.js?v=${V.shop}"></script>
 </body>
 </html>
@@ -226,31 +250,55 @@ ${overlays}
 }
 
 // ── Seitenbausteine ──
-const catTiles = () => CATEGORIES.map(c => `
-    <a href="/${c.slug}/" class="cat-tile">
-      <img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)}" loading="lazy" width="600" height="360">
-      <div class="row"><span class="name">${c.name}</span><span class="price">${c.priceHint}</span></div>
+// Überschriften mit data-split in einzelne Wörter zerlegen, damit sie Wort für Wort einlaufen können
+function splitWords(html){
+  return html.replace(/<(h[12])([^>]*?)\sdata-split="(intro|scroll)"([^>]*)>([\s\S]*?)<\/\1>/g, (m, tag, a, mode, b, inner) => {
+    let i = 0;
+    const out = inner.replace(/(<[^>]+>)|([^\s<]+)/g, (x, t, w) => t ? t : `<span class="w"><span style="--i:${i++}">${w}</span></span>`);
+    return `<${tag}${a} data-split="${mode}"${b}>${out}</${tag}>`;
+  });
+}
+
+const catTiles = () => CATEGORIES.map((c, i) => `
+    <a href="/${c.slug}/" class="cat-tile" data-reveal style="--i:${i}">
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)}" loading="lazy" width="600" height="360"></span>
+      <div class="row"><span class="name">${c.name}<i aria-hidden="true">→</i></span><span class="price">${c.priceHint}</span></div>
       <p class="desc">${c.desc}</p>
     </a>`).join('');
 
-const fmtPlus = o => o.price > 0 ? '+ ' + fmt(o.price) : 'inklusive';
-const aufsatzTiles = () => AUFSATZ.map(o => {
-  const photo = BILDER.beispiel[o.key];
-  return `
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic">${photo ? `<img src="${photo}" alt="Flasche mit ${esc(o.name)}" loading="lazy" width="300" height="375">` : `<span class="ill">${icon(o.key, 56)}</span><span class="soon">Foto folgt</span>`}</span>
-        <span class="row"><span class="ic">${icon(o.key, 18)}</span><span class="nm">${esc(o.name)}</span></span>
-        <span class="pr">${fmtPlus(o)}</span>
-      </a>`;
-}).join('');
+const STERN = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg>';
+const marquee = () => {
+  const words = ['Handgemacht', 'Aus echten Weinflaschen', 'Geschnitten', 'Geschliffen', 'Graviert', 'Aus Dieburg', 'Jedes Stück ein Unikat', 'Padella Vino'];
+  const run = words.map((w, i) => `<span${i % 2 ? ' class="o"' : ''}>${w}</span>${STERN}`).join('');
+  return `<div class="marquee" aria-hidden="true"><div class="marquee-track">${run}${run}</div></div>`;
+};
 
-function productCard(p, small){
+const fmtPlus = o => o.price > 0 ? '+ ' + fmt(o.price) : 'inklusive';
+// Aufsatz-Wechsler: links das Foto, rechts die fünf Aufsätze. Läuft von selbst durch, bis jemand einen antippt.
+const aufsatzSwitch = () => {
+  const shots = AUFSATZ.map((o, i) => {
+    const photo = BILDER.beispiel[o.key];
+    return `<figure class="aufsatz-shot${i === 0 ? ' on' : ''}">${photo
+      ? `<img src="${photo}" alt="Flasche mit ${esc(o.name)}" loading="lazy" width="440" height="550"><figcaption>Beispiel: ${esc(o.name)}</figcaption>`
+      : `<span class="ill">${icon(o.key, 150)}</span><figcaption>Foto folgt</figcaption>`}</figure>`;
+  }).join('');
+  const rows = AUFSATZ.map((o, i) => `<button type="button" class="aufsatz-row${i === 0 ? ' on' : ''}" role="tab" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}"><span class="ic">${icon(o.key, 26)}</span><span><strong>${esc(o.name)}</strong><small>${esc(o.rolle || '')}</small></span><span class="pr">${fmtPlus(o)}</span><span class="bar"></span></button>`).join('');
+  return `<div class="aufsatz-switch" data-aufsatz>
+      <div class="aufsatz-stage" data-reveal>${shots}</div>
+      <div data-reveal style="--i:1">
+        <div class="aufsatz-list" role="tablist" aria-label="Aufsätze">${rows}</div>
+        <div class="aufsatz-foot"><p>Der Preis des Aufsatzes kommt zur Flasche für ${fmt(BOTTLE_BASE)} dazu.</p><a href="/flaschen/" class="btn">Zu den Flaschen</a></div>
+      </div>
+    </div>`;
+};
+
+function productCard(p, small, idx = 0){
   const c = CATEGORIES.find(x => x.key === p.cat);
   const price = hasPaid(p) ? `${fmt(p.price)} <span style="color:var(--dim)">+ Aufsatz</span>` : fmt(p.price);
   const variants = p.option ? `<span class="product-variants">${p.option.choices.length} ${p.option.label === 'Motiv' ? 'Motive' : 'Ausführungen'}</span>` : '';
   return `
-      <a href="/${c.slug}/#${p.slug}" class="product-card" data-pid="${p.id}" onclick="openProduct('${p.id}');return false;">
-        <span class="product-img">${p.badge ? `<span class="product-badge">${esc(p.badge)}</span>` : ''}<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" width="480" height="600">${!small && p.gallery && p.gallery[1] ? `<img class="alt" src="${p.gallery[1]}" alt="" loading="lazy" width="480" height="600">` : ''}</span>
+      <a href="/${c.slug}/#${p.slug}" class="product-card" data-pid="${p.id}" data-reveal style="--i:${idx % (small ? 4 : 3)}" onclick="openProduct('${p.id}', this);return false;">
+        <span class="product-img" data-cursor="Ansehen">${p.badge ? `<span class="product-badge">${esc(p.badge)}</span>` : ''}<img src="${p.image}" alt="${esc(p.name)}" loading="lazy" width="480" height="600">${!small && p.gallery && p.gallery[1] ? `<img class="alt" src="${p.gallery[1]}" alt="" loading="lazy" width="480" height="600">` : ''}</span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">${esc(p.name)}</span><span class="product-price">${price}</span></span>
           ${small ? '' : `<span class="product-tagline">${esc(p.tagline)}</span>${variants}`}
@@ -274,21 +322,21 @@ function categoryPage(c){
   ];
   const content = `
 <section class="wrap" style="padding-top:40px">
-  <p class="crumbs"><a href="/">Start</a> &nbsp;/&nbsp; <a href="/#shop">Shop</a> &nbsp;/&nbsp; <span>${c.name}</span></p>
+  <p class="crumbs" data-intro="fade"><a href="/">Start</a> &nbsp;/&nbsp; <a href="/#shop">Shop</a> &nbsp;/&nbsp; <span>${c.name}</span></p>
   <div class="cat-head">
-    <div><h1>${c.name}</h1><p class="intro">${c.intro}</p></div>
-    <div class="price-box"><span class="big">${c.box[0]}</span><span class="sub">${c.box[1]}</span></div>
+    <div><h1 data-split="intro">${c.name}</h1><p class="intro" data-intro style="--i:2">${c.intro}</p></div>
+    <div class="price-box" data-glow data-intro style="--i:3"><span class="big">${c.box[0]}</span><span class="sub">${c.box[1]}</span></div>
   </div>
-  <figure class="cat-banner"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)} von Flaconella" width="1200" height="720"></figure>
-  <div class="chips-row">${CATEGORIES.map(x => `<a href="/${x.slug}/" class="chip-link${x.key===c.key?' on':''}">${x.name}</a>`).join('')}</div>
+  <figure class="cat-banner" data-intro="fade" style="--i:2"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)} von Flaconella" width="1200" height="720"></figure>
+  <div class="chips-row" data-intro="fade" style="--i:4">${CATEGORIES.map(x => `<a href="/${x.slug}/" class="chip-link${x.key===c.key?' on':''}">${x.name}</a>`).join('')}</div>
   <div class="grid-meta"><span>${items.length} ${items.length === 1 ? 'Produkt' : 'Produkte'}</span><span>Alle Preise inkl. MwSt.</span></div>
-  <div class="product-grid">${items.map(p => productCard(p)).join('')}</div>
-  <div class="promises">${promises.map(([t,d]) => `<div class="promise"><span class="tick">✓</span><div><strong>${t}</strong><span>${d}</span></div></div>`).join('')}</div>
+  <div class="product-grid">${items.map((p, i) => productCard(p, false, i)).join('')}</div>
+  <div class="promises">${promises.map(([t,d], i) => `<div class="promise" data-reveal style="--i:${i}"><span class="tick">✓</span><div><strong>${t}</strong><span>${d}</span></div></div>`).join('')}</div>
 </section>
 <section class="related">
   <div class="wrap inner">
-    <div class="head"><h2>Passt dazu</h2><a href="/#shop" class="link">Alle Kategorien →</a></div>
-    <div class="related-grid">${related.map(p => productCard(p, true)).join('')}</div>
+    <div class="head"><h2 data-split="scroll">Passt dazu</h2><a href="/#shop" class="link" data-reveal="fade">Alle Kategorien →</a></div>
+    <div class="related-grid">${related.map((p, i) => productCard(p, true, i)).join('')}</div>
   </div>
 </section>`;
   return layout({title:`${c.seoTitle} – Flaconella`, description:c.seoDesc, path:`/${c.slug}/`, content, active:c.key, ogImage:`/images/kategorie-${c.key}.jpg`});
@@ -304,8 +352,8 @@ function legalPage(l){
   const nav = LEGAL.map(x => `<a href="/${x.slug}/"${x.slug===l.slug?' class="on"':''}>${x.name}</a>`).join('') + `<a href="/#kontakt" class="gap">Kontakt</a>`;
   const content = `
 <section class="wrap legal-layout">
-  <nav class="legal-nav" aria-label="Rechtliches"><span class="head">Rechtliches</span>${nav}</nav>
-  <article class="legal">
+  <nav class="legal-nav" aria-label="Rechtliches" data-intro="fade"><span class="head">Rechtliches</span>${nav}</nav>
+  <article class="legal" data-intro style="--i:1">
 ${page(l.slug + '.html')}
   </article>
 </section>`;
@@ -323,7 +371,7 @@ function write(path, html){
 write('/', layout({
   title:'Flaconella – Handgefertigte Deko aus recycelten Flaschen',
   description:'Flaschen, Windlichter und Kerzen aus den Wein- und Spirituosenflaschen des Padella Vino in Dieburg. Handgeschnitten, geschliffen, graviert. Versand oder Abholung.',
-  path:'/', content: page('start.html').replace('{{CAT_TILES}}', catTiles()).replace('{{AUFSATZ_TILES}}', aufsatzTiles()), active:null,
+  path:'/', content: page('start.html').replace('{{CAT_TILES}}', catTiles()).replace('{{AUFSATZ_SWITCH}}', aufsatzSwitch()).replace('{{MARQUEE}}', marquee()), active:null,
 }));
 CATEGORIES.forEach(c => write(`/${c.slug}/`, categoryPage(c)));
 LEGAL.forEach(l => write(`/${l.slug}/`, legalPage(l)));

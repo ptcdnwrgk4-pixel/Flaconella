@@ -20,58 +20,83 @@
 <link rel="preload" href="/fonts/PlayfairDisplay-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/Montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
-<link rel="stylesheet" href="/css/style.css?v=1f1fa56d">
+<link rel="stylesheet" href="/css/style.css?v=fe0947ba">
+<script>
+(function(d){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches)d.classList.add('motion');
+  function mark(path){
+    document.querySelectorAll('a.cat-tile').forEach(function(a){
+      var img=a.querySelector('img');if(!img)return;
+      var r=img.getBoundingClientRect();
+      img.style.viewTransitionName=(new URL(a.href).pathname===path&&r.bottom>0&&r.top<innerHeight)?'kat-hero':'';
+    });
+  }
+  addEventListener('pageswap',function(e){if(!e.viewTransition||!e.activation||!e.activation.entry)return;try{mark(new URL(e.activation.entry.url).pathname)}catch(x){}});
+  addEventListener('pagereveal',function(e){if(!e.viewTransition||!window.navigation||!navigation.activation||!navigation.activation.from)return;try{mark(new URL(navigation.activation.from.url).pathname)}catch(x){}});
+})(document.documentElement);
+</script>
+<script type="speculationrules">{"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.php"}},{"not":{"selector_matches":".product-card"}}]},"eagerness":"moderate"}]}</script>
 </head>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
     <button class="nav-burger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="siteNav" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     <a href="/" class="brand" aria-label="Flaconella Startseite"><img src="/images/logo.png" alt="" width="44" height="44"><span>Flaconella</span></a>
-    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/">Flaschen</a><a href="/windlichter/">Windlichter</a><a href="/kerzen/">Kerzen</a><a href="/sets/">Sets</a><span class="nav-sep"></span><a href="/#story">Story</a><a href="/#kontakt">Kontakt</a></nav>
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/" style="--i:0">Flaschen</a><a href="/windlichter/" style="--i:1">Windlichter</a><a href="/kerzen/" style="--i:2">Kerzen</a><a href="/sets/" style="--i:3">Sets</a><span class="nav-sep"></span><a href="/#story" style="--i:4">Story</a><a href="/#kontakt" style="--i:5">Kontakt</a><div class="nav-extra" style="--i:6"><b>Padella Vino</b>Markt 8 · 64807 Dieburg<br>hallo@flaconella.de · 0173 3055042</div></nav>
     <button class="cart-btn" type="button" onclick="openCart()" aria-label="Warenkorb öffnen">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <span class="label">Warenkorb</span><span class="cart-badge">0</span>
     </button>
   </div>
+  <span class="scroll-progress" aria-hidden="true"></span>
 </header>
 <main>
-<section class="hero wrap" id="home">
-  <div class="hero-text">
-    <p class="eyebrow">Handgemacht · Nachhaltig · Aus Dieburg</p>
-    <h1>Jede Flasche hat eine Geschichte. <em>Wir geben ihr eine zweite.</em></h1>
-    <p class="hero-desc">Flaschen, Windlichter und Kerzen aus den Wein- und Spirituosenflaschen unseres Cafés Padella Vino. Geschnitten, geschliffen, graviert. Jedes Stück ein Unikat.</p>
-    <div class="hero-btns"><a href="#shop" class="btn">Zum Shop</a><a href="#story" class="btn-ghost">Unsere Story</a></div>
-    <p class="hero-fine">Jede Flasche 24,90 € · Versand 6,90 € · Abholung im Padella Vino kostenlos</p>
-  </div>
-  <div class="hero-visual">
-    <img src="/images/lampe-hexagonal.webp" alt="Flasche Hexagon mit Lichterkette" width="520" height="650" fetchpriority="high">
-  </div>
-</section>
+<div class="hero-shell">
+  <canvas class="hero-lights" aria-hidden="true"></canvas>
+  <section class="hero wrap" id="home">
+    <div class="hero-text">
+      <p class="eyebrow" data-intro="fade">Handgemacht · Nachhaltig · Aus Dieburg</p>
+      <h1 data-split="intro"><span class="w"><span style="--i:0">Jede</span></span> <span class="w"><span style="--i:1">Flasche</span></span> <span class="w"><span style="--i:2">hat</span></span> <span class="w"><span style="--i:3">eine</span></span> <span class="w"><span style="--i:4">Geschichte.</span></span> <em><span class="w"><span style="--i:5">Wir</span></span> <span class="w"><span style="--i:6">geben</span></span> <span class="w"><span style="--i:7">ihr</span></span> <span class="w"><span style="--i:8">eine</span></span> <span class="w"><span style="--i:9">zweite.</span></span></em></h1>
+      <p class="hero-desc" data-intro style="--i:6">Flaschen, Windlichter und Kerzen aus den Wein- und Spirituosenflaschen unseres Cafés Padella Vino. Geschnitten, geschliffen, graviert. Jedes Stück ein Unikat.</p>
+      <div class="hero-btns" data-intro style="--i:7"><a href="#shop" class="btn">Zum Shop</a><a href="#story" class="btn-ghost">Unsere Story</a></div>
+      <p class="hero-fine" data-intro="fade" style="--i:9">Jede Flasche 24,90 € · Versand 6,90 € · Abholung im Padella Vino kostenlos</p>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-stack">
+        <span class="hero-glow" aria-hidden="true"></span>
+        <span class="hero-frame" aria-hidden="true"></span>
+        <div class="hero-photo"><img src="/images/lampe-hexagonal.webp" alt="Flasche Hexagon mit Lichterkette" width="520" height="650" fetchpriority="high"></div>
+      </div>
+    </div>
+  </section>
+  <span class="scroll-cue" aria-hidden="true"><span></span></span>
+</div>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"><span>Handgemacht</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Aus echten Weinflaschen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Geschnitten</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Geschliffen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Graviert</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Aus Dieburg</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Jedes Stück ein Unikat</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Padella Vino</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Handgemacht</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Aus echten Weinflaschen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Geschnitten</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Geschliffen</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Graviert</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Aus Dieburg</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span>Jedes Stück ein Unikat</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg><span class="o">Padella Vino</span><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0l2.6 9.4L24 12l-9.4 2.6L12 24l-2.6-9.4L0 12l9.4-2.6z"/></svg></div></div>
 
 <section class="section wrap" id="shop">
   <div class="section-head">
-    <div class="kicker"><p class="eyebrow">Der Shop</p><h2>Vier Kategorien, ein Prinzip</h2></div>
-    <p class="lead">Jede Flasche kostet 24,90 €. Korken, Lichterkette, Lampenschirm oder Kerzenaufsatz wählst du dazu. Windlichter, Kerzen und Sets haben feste Preise.</p>
+    <div class="kicker"><p class="eyebrow" data-reveal="fade">Der Shop</p><h2 data-split="scroll"><span class="w"><span style="--i:0">Vier</span></span> <span class="w"><span style="--i:1">Kategorien,</span></span> <span class="w"><span style="--i:2">ein</span></span> <span class="w"><span style="--i:3">Prinzip</span></span></h2></div>
+    <p class="lead" data-reveal style="--i:2">Jede Flasche kostet 24,90 €. Korken, Lichterkette, Lampenschirm oder Kerzenaufsatz wählst du dazu. Windlichter, Kerzen und Sets haben feste Preise.</p>
   </div>
   <div class="cat-grid">
-    <a href="/flaschen/" class="cat-tile">
-      <img src="/images/kategorie-flasche.jpg" alt="Flaschen" loading="lazy" width="600" height="360">
-      <div class="row"><span class="name">Flaschen</span><span class="price">je 24,90 € + Aufsatz</span></div>
+    <a href="/flaschen/" class="cat-tile" data-reveal style="--i:0">
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-flasche.jpg" alt="Flaschen" loading="lazy" width="600" height="360"></span>
+      <div class="row"><span class="name">Flaschen<i aria-hidden="true">→</i></span><span class="price">je 24,90 € + Aufsatz</span></div>
       <p class="desc">Karaffe, Lampe oder Kerzenhalter – je nach Aufsatz.</p>
     </a>
-    <a href="/windlichter/" class="cat-tile">
-      <img src="/images/kategorie-windlicht.jpg" alt="Windlichter" loading="lazy" width="600" height="360">
-      <div class="row"><span class="name">Windlichter</span><span class="price">39,00 €</span></div>
+    <a href="/windlichter/" class="cat-tile" data-reveal style="--i:1">
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-windlicht.jpg" alt="Windlichter" loading="lazy" width="600" height="360"></span>
+      <div class="row"><span class="name">Windlichter<i aria-hidden="true">→</i></span><span class="price">39,00 €</span></div>
       <p class="desc">Geschnitten, graviert, Teelicht und Untersetzer inklusive.</p>
     </a>
-    <a href="/kerzen/" class="cat-tile">
-      <img src="/images/kategorie-kerze.jpg" alt="Kerzen" loading="lazy" width="600" height="360">
-      <div class="row"><span class="name">Kerzen</span><span class="price">ab 25,00 €</span></div>
+    <a href="/kerzen/" class="cat-tile" data-reveal style="--i:2">
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-kerze.jpg" alt="Kerzen" loading="lazy" width="600" height="360"></span>
+      <div class="row"><span class="name">Kerzen<i aria-hidden="true">→</i></span><span class="price">ab 25,00 €</span></div>
       <p class="desc">Handgegossen aus Bienen- und Gelwachs im Glas.</p>
     </a>
-    <a href="/sets/" class="cat-tile">
-      <img src="/images/kategorie-set.jpg" alt="Sets" loading="lazy" width="600" height="360">
-      <div class="row"><span class="name">Sets</span><span class="price">ab 44,90 €</span></div>
+    <a href="/sets/" class="cat-tile" data-reveal style="--i:3">
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-set.jpg" alt="Sets" loading="lazy" width="600" height="360"></span>
+      <div class="row"><span class="name">Sets<i aria-hidden="true">→</i></span><span class="price">ab 44,90 €</span></div>
       <p class="desc">Paare und Trios mit Set-Vorteil, zum Beispiel drei Kerzenhalter-Flaschen.</p>
     </a></div>
 </section>
@@ -79,72 +104,54 @@
 <section class="aufsatz-band" id="aufsaetze">
   <div class="wrap">
     <div class="section-head">
-      <div class="kicker"><p class="eyebrow">Eine Flasche, fünf Aufsätze</p><h2>Du entscheidest, was oben drauf kommt</h2></div>
-      <p class="lead">Jede Flasche kostet 24,90 € mit Korken. Mit Lichterkette wird sie zur Lampe, mit Lampenschirm zur Leuchte, mit Kerzenaufsatz zum Kerzenhalter. Den Aufsatz wählst du im Produktfenster.</p>
+      <div class="kicker"><p class="eyebrow" data-reveal="fade">Eine Flasche, fünf Aufsätze</p><h2 data-split="scroll"><span class="w"><span style="--i:0">Du</span></span> <span class="w"><span style="--i:1">entscheidest,</span></span> <span class="w"><span style="--i:2">was</span></span> <span class="w"><span style="--i:3">oben</span></span> <span class="w"><span style="--i:4">drauf</span></span> <span class="w"><span style="--i:5">kommt</span></span></h2></div>
+      <p class="lead" data-reveal style="--i:2">Mit Lichterkette wird die Flasche zur Lampe, mit Lampenschirm zur Leuchte, mit Kerzenaufsatz zum Kerzenhalter. Tipp die Aufsätze an und sieh dir an, was aus einer Flasche wird.</p>
     </div>
-    <div class="aufsatz-grid">
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic"><img src="/images/lampe-weinflasche-klar.webp" alt="Flasche mit Korken" loading="lazy" width="300" height="375"></span>
-        <span class="row"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5v5h-5z"/><path d="M9 7.5h6l1.5 3.5V21.5h-9V11z"/></svg></span><span class="nm">Korken</span></span>
-        <span class="pr">inklusive</span>
-      </a>
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic"><span class="ill"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2"/><path d="M10.2 6.4h3.6v3h-3.6z"/><path d="M9 9.4h6l1.5 3V21.5h-9v-9z"/></svg></span><span class="soon">Foto folgt</span></span>
-        <span class="row"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2"/><path d="M10.2 6.4h3.6v3h-3.6z"/><path d="M9 9.4h6l1.5 3V21.5h-9v-9z"/></svg></span><span class="nm">Dekokorken</span></span>
-        <span class="pr">+ 4,00 €</span>
-      </a>
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic"><img src="/images/lampe-hexagonal.webp" alt="Flasche mit LED-Lichterkette im Korken" loading="lazy" width="300" height="375"></span>
-        <span class="row"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4v4h-4z"/><path d="M9.5 6.5h5l2 4v11h-9v-11z"/><path d="M9 12c2 1 4-1 6 0M9 16c2 1 4-1 6 0" stroke-dasharray="1 1.6"/></svg></span><span class="nm">LED-Lichterkette im Korken</span></span>
-        <span class="pr">+ 10,00 €</span>
-      </a>
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic"><span class="ill"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/></svg></span><span class="soon">Foto folgt</span></span>
-        <span class="row"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/></svg></span><span class="nm">Lampenschirm mit Licht</span></span>
-        <span class="pr">+ 14,00 €</span>
-      </a>
-      <a href="/flaschen/" class="aufsatz-tile">
-        <span class="pic"><img src="/images/kerzenhalter_set_3er_02.webp" alt="Flasche mit Kerzenaufsatz mit Wachskerze" loading="lazy" width="300" height="375"></span>
-        <span class="row"><span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M12 1.8c1.3 1.6 1.3 2.8 0 3.8-1.3-1-1.3-2.2 0-3.8z"/><path d="M10.6 6h2.8v6h-2.8z"/><path d="M8 12h8"/><path d="M10.2 12v2.2L8.5 17v4.5h7V17l-1.7-2.8V12"/></svg></span><span class="nm">Kerzenaufsatz mit Wachskerze</span></span>
-        <span class="pr">+ 14,00 €</span>
-      </a></div>
+    <div class="aufsatz-switch" data-aufsatz>
+      <div class="aufsatz-stage" data-reveal><figure class="aufsatz-shot on"><img src="/images/lampe-weinflasche-klar.webp" alt="Flasche mit Korken" loading="lazy" width="440" height="550"><figcaption>Beispiel: Korken</figcaption></figure><figure class="aufsatz-shot"><span class="ill"><svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2"/><path d="M10.2 6.4h3.6v3h-3.6z"/><path d="M9 9.4h6l1.5 3V21.5h-9v-9z"/></svg></span><figcaption>Foto folgt</figcaption></figure><figure class="aufsatz-shot"><img src="/images/lampe-hexagonal.webp" alt="Flasche mit LED-Lichterkette im Korken" loading="lazy" width="440" height="550"><figcaption>Beispiel: LED-Lichterkette im Korken</figcaption></figure><figure class="aufsatz-shot"><span class="ill"><svg width="150" height="150" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/></svg></span><figcaption>Foto folgt</figcaption></figure><figure class="aufsatz-shot"><img src="/images/kerzenhalter_set_3er_02.webp" alt="Flasche mit Kerzenaufsatz mit Wachskerze" loading="lazy" width="440" height="550"><figcaption>Beispiel: Kerzenaufsatz mit Wachskerze</figcaption></figure></div>
+      <div data-reveal style="--i:1">
+        <div class="aufsatz-list" role="tablist" aria-label="Aufsätze"><button type="button" class="aufsatz-row on" role="tab" aria-selected="true" tabindex="0"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 2.5h5v5h-5z"/><path d="M9 7.5h6l1.5 3.5V21.5h-9V11z"/></svg></span><span><strong>Korken</strong><small>Karaffe oder Vase</small></span><span class="pr">inklusive</span><span class="bar"></span></button><button type="button" class="aufsatz-row" role="tab" aria-selected="false" tabindex="-1"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.2" r="2.2"/><path d="M10.2 6.4h3.6v3h-3.6z"/><path d="M9 9.4h6l1.5 3V21.5h-9v-9z"/></svg></span><span><strong>Dekokorken</strong><small>Karaffe mit Schmuckverschluss</small></span><span class="pr">+ 4,00 €</span><span class="bar"></span></button><button type="button" class="aufsatz-row" role="tab" aria-selected="false" tabindex="-1"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M10 2.5h4v4h-4z"/><path d="M9.5 6.5h5l2 4v11h-9v-11z"/><path d="M9 12c2 1 4-1 6 0M9 16c2 1 4-1 6 0" stroke-dasharray="1 1.6"/></svg></span><span><strong>LED-Lichterkette im Korken</strong><small>Wird zur Lampe</small></span><span class="pr">+ 10,00 €</span><span class="bar"></span></button><button type="button" class="aufsatz-row" role="tab" aria-selected="false" tabindex="-1"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M7 2.5h10l3.5 7.5h-17z"/><path d="M12 10v2.5"/><path d="M10 12.5h4l2 3v6H8v-6z"/></svg></span><span><strong>Lampenschirm mit Licht</strong><small>Wird zur Tischleuchte</small></span><span class="pr">+ 14,00 €</span><span class="bar"></span></button><button type="button" class="aufsatz-row" role="tab" aria-selected="false" tabindex="-1"><span class="ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><path d="M12 1.8c1.3 1.6 1.3 2.8 0 3.8-1.3-1-1.3-2.2 0-3.8z"/><path d="M10.6 6h2.8v6h-2.8z"/><path d="M8 12h8"/><path d="M10.2 12v2.2L8.5 17v4.5h7V17l-1.7-2.8V12"/></svg></span><span><strong>Kerzenaufsatz mit Wachskerze</strong><small>Wird zum Kerzenhalter</small></span><span class="pr">+ 14,00 €</span><span class="bar"></span></button></div>
+        <div class="aufsatz-foot"><p>Der Preis des Aufsatzes kommt zur Flasche für 24,90 € dazu.</p><a href="/flaschen/" class="btn">Zu den Flaschen</a></div>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="story" id="story">
+  <span class="story-ghost" aria-hidden="true">Padella Vino · Dieburg · Padella Vino</span>
   <div class="wrap grid">
     <div class="story-collage">
-      <img class="a" src="/images/story-kollektion.webp" alt="Vier gravierte Flaschen mit Lichterkette" loading="lazy" width="480" height="600">
-      <img class="b" src="/images/story-lampen.webp" alt="Zwei Flaschenlampen" loading="lazy" width="480" height="600">
-      <img class="c" src="/images/story-kerzen.webp" alt="Handgegossene Kerzen im Glas" loading="lazy" width="600" height="600">
+      <span class="cell a" data-reveal="clip"><img src="/images/story-kollektion.webp" alt="Vier gravierte Flaschen mit Lichterkette" loading="lazy" width="480" height="600"></span>
+      <span class="cell b" data-reveal="clip" style="--i:1"><img src="/images/story-lampen.webp" alt="Zwei Flaschenlampen" loading="lazy" width="480" height="600"></span>
+      <span class="cell c" data-reveal="clip" style="--i:2"><img src="/images/story-kerzen.webp" alt="Handgegossene Kerzen im Glas" loading="lazy" width="600" height="600"></span>
     </div>
     <div class="text">
-      <p class="eyebrow">Unsere Geschichte</p>
-      <h2>Vom Tisch ins <em>Wohnzimmer</em></h2>
-      <p>Im Padella Vino am Marktplatz Dieburg öffnen wir jeden Abend Flaschen – Lugana, Amarone, Chardonnay, Prosecco. Jede trägt einen Abend, ein Gespräch, einen Moment in sich. Statt sie wegzuwerfen, geben wir ihnen mit Glasschneider, Schleifer und Graviernadel ein zweites Leben.</p>
-      <p>Flaconella ist kein Industrieprodukt. Es ist ein Nebenprodukt echter Gastfreundschaft – und jedes Stück erzählt, woher es kommt.</p>
-      <a href="https://padella-vino.de" target="_blank" rel="noopener" class="link">Zum Padella Vino →</a>
+      <p class="eyebrow" data-reveal="fade">Unsere Geschichte</p>
+      <h2 data-split="scroll"><span class="w"><span style="--i:0">Vom</span></span> <span class="w"><span style="--i:1">Tisch</span></span> <span class="w"><span style="--i:2">ins</span></span> <em><span class="w"><span style="--i:3">Wohnzimmer</span></span></em></h2>
+      <p data-reveal style="--i:1">Im Padella Vino am Marktplatz Dieburg öffnen wir jeden Abend Flaschen – Lugana, Amarone, Chardonnay, Prosecco. Jede trägt einen Abend, ein Gespräch, einen Moment in sich. Statt sie wegzuwerfen, geben wir ihnen mit Glasschneider, Schleifer und Graviernadel ein zweites Leben.</p>
+      <p data-reveal style="--i:2">Flaconella ist kein Industrieprodukt. Es ist ein Nebenprodukt echter Gastfreundschaft – und jedes Stück erzählt, woher es kommt.</p>
+      <a href="https://padella-vino.de" target="_blank" rel="noopener" class="link" data-reveal="fade" style="--i:3">Zum Padella Vino →</a>
     </div>
   </div>
 </section>
 
 <section class="section wrap process" id="prozess">
-  <div class="head"><p class="eyebrow">Handwerk</p><h2>So entsteht eine Flaconella</h2></div>
+  <div class="head"><p class="eyebrow" data-reveal="fade">Handwerk</p><h2 data-split="scroll"><span class="w"><span style="--i:0">So</span></span> <span class="w"><span style="--i:1">entsteht</span></span> <span class="w"><span style="--i:2">eine</span></span> <span class="w"><span style="--i:3">Flaconella</span></span></h2></div>
   <div class="steps">
-    <div class="step"><span class="num">01</span><strong>Die Flasche</strong><p>Leere Flaschen aus dem Padella Vino – gereinigt, aussortiert, auf Risse geprüft. Nur die besten werden weiterverarbeitet.</p></div>
-    <div class="step"><span class="num">02</span><strong>Der Schnitt</strong><p>Präziser Schnitt mit der Glasschneidemaschine. Je nach Produkt wird die Flasche geteilt oder der Boden abgetrennt.</p></div>
-    <div class="step"><span class="num">03</span><strong>Der Schliff</strong><p>Jede Schnittkante wird von Hand geschliffen – glatt, sicher, sauber. Das Stück prüfen wir dreimal auf Schärfen und Risse.</p></div>
-    <div class="step"><span class="num">04</span><strong>Die Gravur</strong><p>Motiv per Graviernadel eingearbeitet. Präzise, dauerhaft, einzigartig.</p></div>
+    <div class="step" style="--i:0"><span class="num">01</span><strong>Die Flasche</strong><p>Leere Flaschen aus dem Padella Vino – gereinigt, aussortiert, auf Risse geprüft. Nur die besten werden weiterverarbeitet.</p></div>
+    <div class="step" style="--i:1"><span class="num">02</span><strong>Der Schnitt</strong><p>Präziser Schnitt mit der Glasschneidemaschine. Je nach Produkt wird die Flasche geteilt oder der Boden abgetrennt.</p></div>
+    <div class="step" style="--i:2"><span class="num">03</span><strong>Der Schliff</strong><p>Jede Schnittkante wird von Hand geschliffen – glatt, sicher, sauber. Das Stück prüfen wir dreimal auf Schärfen und Risse.</p></div>
+    <div class="step" style="--i:3"><span class="num">04</span><strong>Die Gravur</strong><p>Motiv per Graviernadel eingearbeitet. Präzise, dauerhaft, einzigartig.</p></div>
   </div>
 </section>
 
 <section class="contact" id="kontakt">
   <div class="wrap grid">
     <div class="text">
-      <p class="eyebrow">Kontakt</p>
-      <h2>Lass uns <em>reden</em></h2>
-      <p>Fragen zu einem Stück, Wunschgravur, Hochzeit oder eine größere Bestellung für Restaurant und Hotel? Schreib uns oder komm im Padella Vino vorbei. Dort kannst du jede Bestellung auch kostenlos abholen.</p>
-      <dl>
+      <p class="eyebrow" data-reveal="fade">Kontakt</p>
+      <h2 data-split="scroll"><span class="w"><span style="--i:0">Lass</span></span> <span class="w"><span style="--i:1">uns</span></span> <em><span class="w"><span style="--i:2">reden</span></span></em></h2>
+      <p data-reveal style="--i:1">Fragen zu einem Stück, Wunschgravur, Hochzeit oder eine größere Bestellung für Restaurant und Hotel? Schreib uns oder komm im Padella Vino vorbei. Dort kannst du jede Bestellung auch kostenlos abholen.</p>
+      <dl data-reveal style="--i:2">
         <dt>Adresse</dt><dd>Padella Vino · Markt 8 · 64807 Dieburg</dd>
         <dt>E-Mail</dt><dd><a href="mailto:hallo@flaconella.de">hallo@flaconella.de</a></dd>
         <dt>Telefon</dt><dd><a href="tel:+491733055042">0173 3055042</a></dd>
@@ -152,7 +159,7 @@
         <dt>Abholung</dt><dd>Mo–Sa · Öffnungszeiten Padella Vino, nach Absprache</dd>
       </dl>
     </div>
-    <form class="form" onsubmit="submitContact(event)">
+    <form class="form" onsubmit="submitContact(event)" data-reveal data-glow style="--i:1">
       <div class="form-row">
         <div class="field"><label for="ct-vorname">Vorname</label><input type="text" id="ct-vorname" name="vorname" placeholder="Maria" required autocomplete="given-name"></div>
         <div class="field"><label for="ct-nachname">Nachname</label><input type="text" id="ct-nachname" name="nachname" placeholder="Müller" required autocomplete="family-name"></div>
@@ -185,7 +192,9 @@
     <div class="footer-col"><h4>Rechtliches</h4><ul><li><a href="/impressum/">Impressum</a></li><li><a href="/datenschutz/">Datenschutz</a></li><li><a href="/agb/">AGB</a></li><li><a href="/widerruf/">Widerruf</a></li></ul></div>
   </div>
   <div class="wrap footer-bottom"><span>© 2026 Flaconella · Ein Projekt von <a href="https://padella-vino.de" target="_blank" rel="noopener" style="color:inherit">Padella Vino Dieburg</a></span><span>Versand 6,90 € · Abholung kostenlos · PayPal oder Überweisung</span></div>
+  <div class="footer-word" aria-hidden="true"><span style="--i:0">F</span><span style="--i:1">l</span><span style="--i:2">a</span><span style="--i:3">c</span><span style="--i:4">o</span><span style="--i:5">n</span><span style="--i:6">e</span><span style="--i:7">l</span><span style="--i:8">l</span><span style="--i:9">a</span></div>
 </footer>
+<button class="to-top" type="button" aria-label="Nach oben"><svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle class="t" cx="26" cy="26" r="25"/><circle class="p" cx="26" cy="26" r="25" pathLength="1"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-label="Warenkorb">
@@ -260,7 +269,10 @@
 <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-label="Bestellung">
   <div class="success-modal">
     <button class="modal-close" type="button" aria-label="Schließen" onclick="closeSuccess()">✕</button>
-    <div class="success-icon">🍾</div>
+    <div class="success-icon" data-state="ok">
+      <svg class="ok" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M20 33l8 8 16-17" pathLength="1"/></svg>
+      <svg class="mail" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M18 24h28v18H18zM18 25l14 10 14-10" pathLength="1"/></svg>
+    </div>
     <h3 id="successTitle">Bestellung eingegangen!</h3>
     <p id="successText"></p>
     <div id="successPayment" style="width:100%"></div>
@@ -269,8 +281,9 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span></div>
-<script src="/js/products.js?v=b46ac0af"></script>
+<script src="/js/products.js?v=87ab1d9d"></script>
 <script src="/js/bilder.js?v=b66ea14e"></script>
-<script src="/js/shop.js?v=a241ff1c"></script>
+<script src="/js/motion.js?v=fdea31c4"></script>
+<script src="/js/shop.js?v=444ffa16"></script>
 </body>
 </html>

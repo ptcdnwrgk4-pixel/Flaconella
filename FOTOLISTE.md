@@ -1,6 +1,6 @@
 # Fotoliste Flaconella
 
-Automatisch erzeugt von `node build.mjs` am 2026-10-13. Fotos in `images/aufsatz/` legen und neu bauen.
+Automatisch erzeugt von `node build.mjs` am 2026-11-26. Fotos in `images/aufsatz/` legen und neu bauen.
 
 ## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)
 

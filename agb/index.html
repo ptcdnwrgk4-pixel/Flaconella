@@ -20,25 +20,41 @@
 <link rel="preload" href="/fonts/PlayfairDisplay-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/Montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
-<link rel="stylesheet" href="/css/style.css?v=1f1fa56d">
+<link rel="stylesheet" href="/css/style.css?v=fe0947ba">
+<script>
+(function(d){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches)d.classList.add('motion');
+  function mark(path){
+    document.querySelectorAll('a.cat-tile').forEach(function(a){
+      var img=a.querySelector('img');if(!img)return;
+      var r=img.getBoundingClientRect();
+      img.style.viewTransitionName=(new URL(a.href).pathname===path&&r.bottom>0&&r.top<innerHeight)?'kat-hero':'';
+    });
+  }
+  addEventListener('pageswap',function(e){if(!e.viewTransition||!e.activation||!e.activation.entry)return;try{mark(new URL(e.activation.entry.url).pathname)}catch(x){}});
+  addEventListener('pagereveal',function(e){if(!e.viewTransition||!window.navigation||!navigation.activation||!navigation.activation.from)return;try{mark(new URL(navigation.activation.from.url).pathname)}catch(x){}});
+})(document.documentElement);
+</script>
+<script type="speculationrules">{"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.php"}},{"not":{"selector_matches":".product-card"}}]},"eagerness":"moderate"}]}</script>
 </head>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
     <button class="nav-burger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="siteNav" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     <a href="/" class="brand" aria-label="Flaconella Startseite"><img src="/images/logo.png" alt="" width="44" height="44"><span>Flaconella</span></a>
-    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/">Flaschen</a><a href="/windlichter/">Windlichter</a><a href="/kerzen/">Kerzen</a><a href="/sets/">Sets</a><span class="nav-sep"></span><a href="/#story">Story</a><a href="/#kontakt">Kontakt</a></nav>
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/" style="--i:0">Flaschen</a><a href="/windlichter/" style="--i:1">Windlichter</a><a href="/kerzen/" style="--i:2">Kerzen</a><a href="/sets/" style="--i:3">Sets</a><span class="nav-sep"></span><a href="/#story" style="--i:4">Story</a><a href="/#kontakt" style="--i:5">Kontakt</a><div class="nav-extra" style="--i:6"><b>Padella Vino</b>Markt 8 · 64807 Dieburg<br>hallo@flaconella.de · 0173 3055042</div></nav>
     <button class="cart-btn" type="button" onclick="openCart()" aria-label="Warenkorb öffnen">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <span class="label">Warenkorb</span><span class="cart-badge">0</span>
     </button>
   </div>
+  <span class="scroll-progress" aria-hidden="true"></span>
 </header>
 <main>
 
 <section class="wrap legal-layout">
-  <nav class="legal-nav" aria-label="Rechtliches"><span class="head">Rechtliches</span><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/agb/" class="on">AGB</a><a href="/widerruf/">Widerruf</a><a href="/#kontakt" class="gap">Kontakt</a></nav>
-  <article class="legal">
+  <nav class="legal-nav" aria-label="Rechtliches" data-intro="fade"><span class="head">Rechtliches</span><a href="/impressum/">Impressum</a><a href="/datenschutz/">Datenschutz</a><a href="/agb/" class="on">AGB</a><a href="/widerruf/">Widerruf</a><a href="/#kontakt" class="gap">Kontakt</a></nav>
+  <article class="legal" data-intro style="--i:1">
 <h3>Allgemeine Geschäftsbedingungen</h3>
     <div class="legal-sub">Stand: Oktober 2026</div>
 
@@ -101,7 +117,9 @@
     <div class="footer-col"><h4>Rechtliches</h4><ul><li><a href="/impressum/">Impressum</a></li><li><a href="/datenschutz/">Datenschutz</a></li><li><a href="/agb/">AGB</a></li><li><a href="/widerruf/">Widerruf</a></li></ul></div>
   </div>
   <div class="wrap footer-bottom"><span>© 2026 Flaconella · Ein Projekt von <a href="https://padella-vino.de" target="_blank" rel="noopener" style="color:inherit">Padella Vino Dieburg</a></span><span>Versand 6,90 € · Abholung kostenlos · PayPal oder Überweisung</span></div>
+  <div class="footer-word" aria-hidden="true"><span style="--i:0">F</span><span style="--i:1">l</span><span style="--i:2">a</span><span style="--i:3">c</span><span style="--i:4">o</span><span style="--i:5">n</span><span style="--i:6">e</span><span style="--i:7">l</span><span style="--i:8">l</span><span style="--i:9">a</span></div>
 </footer>
+<button class="to-top" type="button" aria-label="Nach oben"><svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle class="t" cx="26" cy="26" r="25"/><circle class="p" cx="26" cy="26" r="25" pathLength="1"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-label="Warenkorb">
@@ -176,7 +194,10 @@
 <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-label="Bestellung">
   <div class="success-modal">
     <button class="modal-close" type="button" aria-label="Schließen" onclick="closeSuccess()">✕</button>
-    <div class="success-icon">🍾</div>
+    <div class="success-icon" data-state="ok">
+      <svg class="ok" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M20 33l8 8 16-17" pathLength="1"/></svg>
+      <svg class="mail" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M18 24h28v18H18zM18 25l14 10 14-10" pathLength="1"/></svg>
+    </div>
     <h3 id="successTitle">Bestellung eingegangen!</h3>
     <p id="successText"></p>
     <div id="successPayment" style="width:100%"></div>
@@ -185,8 +206,9 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span></div>
-<script src="/js/products.js?v=b46ac0af"></script>
+<script src="/js/products.js?v=87ab1d9d"></script>
 <script src="/js/bilder.js?v=b66ea14e"></script>
-<script src="/js/shop.js?v=a241ff1c"></script>
+<script src="/js/motion.js?v=fdea31c4"></script>
+<script src="/js/shop.js?v=444ffa16"></script>
 </body>
 </html>

@@ -23,11 +23,11 @@ const BOTTLE_BASE = 24.90;
 
 const BOTTLE_ADDONS = [
   {label:'Aufsatz · Verschluss, Licht oder Kerze', type:'single', options:[
-    {key:'korken', name:'Korken', price:0, note:'inklusive'},
-    {key:'dekokorken', name:'Dekokorken', price:4},
-    {key:'lichterkette', name:'LED-Lichterkette im Korken', price:10},
-    {key:'lampenschirm', name:'Lampenschirm mit Licht', price:14},
-    {key:'kerzenaufsatz', name:'Kerzenaufsatz mit Wachskerze', price:14},
+    {key:'korken', rolle:'Karaffe oder Vase', name:'Korken', price:0, note:'inklusive'},
+    {key:'dekokorken', rolle:'Karaffe mit Schmuckverschluss', name:'Dekokorken', price:4},
+    {key:'lichterkette', rolle:'Wird zur Lampe', name:'LED-Lichterkette im Korken', price:10},
+    {key:'lampenschirm', rolle:'Wird zur Tischleuchte', name:'Lampenschirm mit Licht', price:14},
+    {key:'kerzenaufsatz', rolle:'Wird zum Kerzenhalter', name:'Kerzenaufsatz mit Wachskerze', price:14},
   ]},
 ];
 // Set aus zwei Flaschen: Aufsatz gilt für beide, Preis doppelt.

@@ -20,75 +20,91 @@
 <link rel="preload" href="/fonts/PlayfairDisplay-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/Montserrat-400-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/fonts/fonts.css">
-<link rel="stylesheet" href="/css/style.css?v=1f1fa56d">
+<link rel="stylesheet" href="/css/style.css?v=fe0947ba">
+<script>
+(function(d){
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference)').matches)d.classList.add('motion');
+  function mark(path){
+    document.querySelectorAll('a.cat-tile').forEach(function(a){
+      var img=a.querySelector('img');if(!img)return;
+      var r=img.getBoundingClientRect();
+      img.style.viewTransitionName=(new URL(a.href).pathname===path&&r.bottom>0&&r.top<innerHeight)?'kat-hero':'';
+    });
+  }
+  addEventListener('pageswap',function(e){if(!e.viewTransition||!e.activation||!e.activation.entry)return;try{mark(new URL(e.activation.entry.url).pathname)}catch(x){}});
+  addEventListener('pagereveal',function(e){if(!e.viewTransition||!window.navigation||!navigation.activation||!navigation.activation.from)return;try{mark(new URL(navigation.activation.from.url).pathname)}catch(x){}});
+})(document.documentElement);
+</script>
+<script type="speculationrules">{"prefetch":[{"where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":"/*.php"}},{"not":{"selector_matches":".product-card"}}]},"eagerness":"moderate"}]}</script>
 </head>
 <body>
 <header class="site-header">
   <div class="wrap header-inner">
     <button class="nav-burger" type="button" aria-label="Menü öffnen" aria-expanded="false" aria-controls="siteNav" onclick="toggleMobileMenu()"><span></span><span></span><span></span></button>
     <a href="/" class="brand" aria-label="Flaconella Startseite"><img src="/images/logo.png" alt="" width="44" height="44"><span>Flaconella</span></a>
-    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/">Flaschen</a><a href="/windlichter/">Windlichter</a><a href="/kerzen/">Kerzen</a><a href="/sets/" class="on">Sets</a><span class="nav-sep"></span><a href="/#story">Story</a><a href="/#kontakt">Kontakt</a></nav>
+    <nav class="site-nav" id="siteNav" aria-label="Hauptnavigation"><a href="/flaschen/" style="--i:0">Flaschen</a><a href="/windlichter/" style="--i:1">Windlichter</a><a href="/kerzen/" style="--i:2">Kerzen</a><a href="/sets/" style="--i:3" class="on">Sets</a><span class="nav-sep"></span><a href="/#story" style="--i:4">Story</a><a href="/#kontakt" style="--i:5">Kontakt</a><div class="nav-extra" style="--i:6"><b>Padella Vino</b>Markt 8 · 64807 Dieburg<br>hallo@flaconella.de · 0173 3055042</div></nav>
     <button class="cart-btn" type="button" onclick="openCart()" aria-label="Warenkorb öffnen">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 7h12l1 13H5L6 7z"/><path d="M9 7a3 3 0 0 1 6 0"/></svg>
       <span class="label">Warenkorb</span><span class="cart-badge">0</span>
     </button>
   </div>
+  <span class="scroll-progress" aria-hidden="true"></span>
 </header>
 <main>
 
 <section class="wrap" style="padding-top:40px">
-  <p class="crumbs"><a href="/">Start</a> &nbsp;/&nbsp; <a href="/#shop">Shop</a> &nbsp;/&nbsp; <span>Sets</span></p>
+  <p class="crumbs" data-intro="fade"><a href="/">Start</a> &nbsp;/&nbsp; <a href="/#shop">Shop</a> &nbsp;/&nbsp; <span>Sets</span></p>
   <div class="cat-head">
-    <div><h1>Sets</h1><p class="intro">Kuratierte Paare und Trios mit Set-Vorteil. Als Geschenk oder für den gedeckten Tisch.</p></div>
-    <div class="price-box"><span class="big">ab 44,90 €</span><span class="sub">Duo-Set Flasche XL 44,90 € · Kerzenhalter 3er-Set 109 €</span></div>
+    <div><h1 data-split="intro"><span class="w"><span style="--i:0">Sets</span></span></h1><p class="intro" data-intro style="--i:2">Kuratierte Paare und Trios mit Set-Vorteil. Als Geschenk oder für den gedeckten Tisch.</p></div>
+    <div class="price-box" data-glow data-intro style="--i:3"><span class="big">ab 44,90 €</span><span class="sub">Duo-Set Flasche XL 44,90 € · Kerzenhalter 3er-Set 109 €</span></div>
   </div>
-  <figure class="cat-banner"><img src="/images/kategorie-set.jpg" alt="Sets von Flaconella" width="1200" height="720"></figure>
-  <div class="chips-row"><a href="/flaschen/" class="chip-link">Flaschen</a><a href="/windlichter/" class="chip-link">Windlichter</a><a href="/kerzen/" class="chip-link">Kerzen</a><a href="/sets/" class="chip-link on">Sets</a></div>
+  <figure class="cat-banner" data-intro="fade" style="--i:2"><img src="/images/kategorie-set.jpg" alt="Sets von Flaconella" width="1200" height="720"></figure>
+  <div class="chips-row" data-intro="fade" style="--i:4"><a href="/flaschen/" class="chip-link">Flaschen</a><a href="/windlichter/" class="chip-link">Windlichter</a><a href="/kerzen/" class="chip-link">Kerzen</a><a href="/sets/" class="chip-link on">Sets</a></div>
   <div class="grid-meta"><span>2 Produkte</span><span>Alle Preise inkl. MwSt.</span></div>
   <div class="product-grid">
-      <a href="/sets/#kerzenhalter-3er-set" class="product-card" data-pid="set-k3" onclick="openProduct('set-k3');return false;">
-        <span class="product-img"><span class="product-badge">Set-Vorteil</span><img src="/images/kerzenhalter_set_3er_02.webp" alt="Kerzenhalter 3er-Set" loading="lazy" width="480" height="600"></span>
+      <a href="/sets/#kerzenhalter-3er-set" class="product-card" data-pid="set-k3" data-reveal style="--i:0" onclick="openProduct('set-k3', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><span class="product-badge">Set-Vorteil</span><img src="/images/kerzenhalter_set_3er_02.webp" alt="Kerzenhalter 3er-Set" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Kerzenhalter 3er-Set</span><span class="product-price">109,00 €</span></span>
           <span class="product-tagline">Drei Flaschen mit Kerzenaufsatz – Wachskerzen inklusive</span>
         </span>
       </a>
-      <a href="/sets/#duo-set-flasche-xl" class="product-card" data-pid="set-duo" onclick="openProduct('set-duo');return false;">
-        <span class="product-img"><img src="/images/weinflasche-duo.webp" alt="Duo-Set Flasche XL" loading="lazy" width="480" height="600"></span>
+      <a href="/sets/#duo-set-flasche-xl" class="product-card" data-pid="set-duo" data-reveal style="--i:1" onclick="openProduct('set-duo', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><img src="/images/weinflasche-duo.webp" alt="Duo-Set Flasche XL" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Duo-Set Flasche XL</span><span class="product-price">44,90 € <span style="color:var(--dim)">+ Aufsatz</span></span></span>
           <span class="product-tagline">Zwei große Weinflaschen – hell und dunkel</span>
         </span>
       </a></div>
-  <div class="promises"><div class="promise"><span class="tick">✓</span><div><strong>Set-Vorteil</strong><span>Günstiger als die Einzelstücke, ideal zum Verschenken.</span></div></div><div class="promise"><span class="tick">✓</span><div><strong>Rand von Hand geschliffen</strong><span>Jede Kante wird dreimal geprüft, bevor das Stück in den Karton geht.</span></div></div><div class="promise"><span class="tick">✓</span><div><strong>In 3–5 Werktagen bei dir</strong><span>Versand mit DHL für 6,90 € oder kostenlos abholen in Dieburg.</span></div></div></div>
+  <div class="promises"><div class="promise" data-reveal style="--i:0"><span class="tick">✓</span><div><strong>Set-Vorteil</strong><span>Günstiger als die Einzelstücke, ideal zum Verschenken.</span></div></div><div class="promise" data-reveal style="--i:1"><span class="tick">✓</span><div><strong>Rand von Hand geschliffen</strong><span>Jede Kante wird dreimal geprüft, bevor das Stück in den Karton geht.</span></div></div><div class="promise" data-reveal style="--i:2"><span class="tick">✓</span><div><strong>In 3–5 Werktagen bei dir</strong><span>Versand mit DHL für 6,90 € oder kostenlos abholen in Dieburg.</span></div></div></div>
 </section>
 <section class="related">
   <div class="wrap inner">
-    <div class="head"><h2>Passt dazu</h2><a href="/#shop" class="link">Alle Kategorien →</a></div>
+    <div class="head"><h2 data-split="scroll"><span class="w"><span style="--i:0">Passt</span></span> <span class="w"><span style="--i:1">dazu</span></span></h2><a href="/#shop" class="link" data-reveal="fade">Alle Kategorien →</a></div>
     <div class="related-grid">
-      <a href="/flaschen/#flasche-elegance" class="product-card" data-pid="l1" onclick="openProduct('l1');return false;">
-        <span class="product-img"><span class="product-badge">Bestseller</span><img src="/images/lampe-bulgarini-classic.webp" alt="Flasche Elegance" loading="lazy" width="480" height="600"></span>
+      <a href="/flaschen/#flasche-elegance" class="product-card" data-pid="l1" data-reveal style="--i:0" onclick="openProduct('l1', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><span class="product-badge">Bestseller</span><img src="/images/lampe-bulgarini-classic.webp" alt="Flasche Elegance" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Flasche Elegance</span><span class="product-price">24,90 € <span style="color:var(--dim)">+ Aufsatz</span></span></span>
           
         </span>
       </a>
-      <a href="/windlichter/#windlicht-traube" class="product-card" data-pid="w1" onclick="openProduct('w1');return false;">
-        <span class="product-img"><span class="product-badge">Bestseller</span><img src="/images/braune_flasche_windlicht_blumen_01.webp" alt="Windlicht Traube" loading="lazy" width="480" height="600"></span>
+      <a href="/windlichter/#windlicht-traube" class="product-card" data-pid="w1" data-reveal style="--i:1" onclick="openProduct('w1', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><span class="product-badge">Bestseller</span><img src="/images/braune_flasche_windlicht_blumen_01.webp" alt="Windlicht Traube" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Windlicht Traube</span><span class="product-price">39,00 €</span></span>
           
         </span>
       </a>
-      <a href="/kerzen/#kerze-zitrus-gruen" class="product-card" data-pid="c1" onclick="openProduct('c1');return false;">
-        <span class="product-img"><span class="product-badge">Neu</span><img src="/images/kerze-zitrus-gruen.webp" alt="Kerze Zitrus Grün" loading="lazy" width="480" height="600"></span>
+      <a href="/kerzen/#kerze-zitrus-gruen" class="product-card" data-pid="c1" data-reveal style="--i:2" onclick="openProduct('c1', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><span class="product-badge">Neu</span><img src="/images/kerze-zitrus-gruen.webp" alt="Kerze Zitrus Grün" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Kerze Zitrus Grün</span><span class="product-price">25,00 €</span></span>
           
         </span>
       </a>
-      <a href="/flaschen/#flasche-hexagon" class="product-card" data-pid="l3" onclick="openProduct('l3');return false;">
-        <span class="product-img"><span class="product-badge">Neu</span><img src="/images/lampe-hexagonal.webp" alt="Flasche Hexagon" loading="lazy" width="480" height="600"></span>
+      <a href="/flaschen/#flasche-hexagon" class="product-card" data-pid="l3" data-reveal style="--i:3" onclick="openProduct('l3', this);return false;">
+        <span class="product-img" data-cursor="Ansehen"><span class="product-badge">Neu</span><img src="/images/lampe-hexagonal.webp" alt="Flasche Hexagon" loading="lazy" width="480" height="600"></span>
         <span class="product-info">
           <span class="product-head"><span class="product-name">Flasche Hexagon</span><span class="product-price">24,90 € <span style="color:var(--dim)">+ Aufsatz</span></span></span>
           
@@ -112,7 +128,9 @@
     <div class="footer-col"><h4>Rechtliches</h4><ul><li><a href="/impressum/">Impressum</a></li><li><a href="/datenschutz/">Datenschutz</a></li><li><a href="/agb/">AGB</a></li><li><a href="/widerruf/">Widerruf</a></li></ul></div>
   </div>
   <div class="wrap footer-bottom"><span>© 2026 Flaconella · Ein Projekt von <a href="https://padella-vino.de" target="_blank" rel="noopener" style="color:inherit">Padella Vino Dieburg</a></span><span>Versand 6,90 € · Abholung kostenlos · PayPal oder Überweisung</span></div>
+  <div class="footer-word" aria-hidden="true"><span style="--i:0">F</span><span style="--i:1">l</span><span style="--i:2">a</span><span style="--i:3">c</span><span style="--i:4">o</span><span style="--i:5">n</span><span style="--i:6">e</span><span style="--i:7">l</span><span style="--i:8">l</span><span style="--i:9">a</span></div>
 </footer>
+<button class="to-top" type="button" aria-label="Nach oben"><svg class="ring" viewBox="0 0 52 52" aria-hidden="true"><circle class="t" cx="26" cy="26" r="25"/><circle class="p" cx="26" cy="26" r="25" pathLength="1"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
 
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
 <aside class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-label="Warenkorb">
@@ -187,7 +205,10 @@
 <div class="modal-overlay" id="successModal" role="dialog" aria-modal="true" aria-label="Bestellung">
   <div class="success-modal">
     <button class="modal-close" type="button" aria-label="Schließen" onclick="closeSuccess()">✕</button>
-    <div class="success-icon">🍾</div>
+    <div class="success-icon" data-state="ok">
+      <svg class="ok" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M20 33l8 8 16-17" pathLength="1"/></svg>
+      <svg class="mail" width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="32" cy="32" r="30" pathLength="1"/><path d="M18 24h28v18H18zM18 25l14 10 14-10" pathLength="1"/></svg>
+    </div>
     <h3 id="successTitle">Bestellung eingegangen!</h3>
     <p id="successText"></p>
     <div id="successPayment" style="width:100%"></div>
@@ -196,8 +217,9 @@
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"><span id="toastMsg"></span></div>
-<script src="/js/products.js?v=b46ac0af"></script>
+<script src="/js/products.js?v=87ab1d9d"></script>
 <script src="/js/bilder.js?v=b66ea14e"></script>
-<script src="/js/shop.js?v=a241ff1c"></script>
+<script src="/js/motion.js?v=fdea31c4"></script>
+<script src="/js/shop.js?v=444ffa16"></script>
 </body>
 </html>

@@ -11,6 +11,7 @@ flaschen/ windlichter/ kerzen/ sets/      Kategorieseiten (je index.html)
 impressum/ datenschutz/ agb/ widerruf/    Rechtstexte (je index.html)
 css/style.css               Stylesheet
 js/products.js js/shop.js   Produktdaten und Shop-Logik
+js/bilder.js js/motion.js   Fotos je Aufsatz (erzeugt) und Bewegung
 order.php                   Bestell-, Kontakt- und Bewertungs-Mailer
 .htaccess                   HTTPS-Weiterleitung, Caching, Sicherheits-Header
 favicon.png  robots.txt  sitemap.xml

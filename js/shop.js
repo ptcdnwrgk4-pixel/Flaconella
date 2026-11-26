@@ -116,15 +116,38 @@ window.addEventListener('popstate', function(){
 let currentProduct = null;
 let sel = {option:0, addons:[], qty:1};
 
-function openProduct(id){
+const MOTION = window.FLMotion || {on:false};
+function openProduct(id, source){
   const p = PRODUCTS.find(x => x.id === id || x.slug === id);
   if(!p) return;
-  currentProduct = p;
-  sel = {option:0, addons:defaultAddons(p), qty:1};
-  renderModal();
   const modal = document.getElementById('productModal');
-  if(modal.classList.contains('open')) document.getElementById('modalContent').scrollTop = 0;
-  else openOverlay('productModal');
+  const show = () => {
+    currentProduct = p;
+    sel = {option:0, addons:defaultAddons(p), qty:1};
+    renderModal();
+    if(modal.classList.contains('open')) document.getElementById('modalContent').scrollTop = 0;
+    else openOverlay('productModal');
+  };
+  // Das Foto der angeklickten Karte wächst ins Fenster. Ohne Unterstützung im Browser öffnet das Fenster wie gewohnt.
+  const cardImg = source && source.querySelector ? source.querySelector('.product-img img') : null;
+  if(!MOTION.on || !cardImg || !document.startViewTransition || modal.classList.contains('open')){ show(); return; }
+  const rootEl = document.documentElement;
+  rootEl.classList.add('vt-modal');
+  cardImg.style.viewTransitionName = 'produkt-foto';
+  let vt;
+  try {
+    vt = document.startViewTransition(() => {
+      cardImg.style.viewTransitionName = '';
+      show();
+      const main = document.getElementById('modalMainImg');
+      if(main) main.style.viewTransitionName = 'produkt-foto';
+    });
+  } catch(e) { cardImg.style.viewTransitionName = ''; rootEl.classList.remove('vt-modal'); show(); return; }
+  const done = () => {
+    rootEl.classList.remove('vt-modal');
+    const main = document.getElementById('modalMainImg'); if(main) main.style.viewTransitionName = '';
+  };
+  vt.finished.then(done, done);
 }
 function closeModal(){ closeOverlay('productModal'); }
 
@@ -144,7 +167,7 @@ function renderModal(){
       gallery.forEach((src, idx) => {
         const t = document.createElement('img');
         t.className = 'modal-thumb' + (idx===0 ? ' active' : ''); t.alt = p.name + ' Ansicht ' + (idx+1); t.src = src;
-        t.addEventListener('click', () => { main.src = src; tag.hidden = true; strip.querySelectorAll('.modal-thumb').forEach(e=>e.classList.remove('active')); t.classList.add('active'); });
+        t.addEventListener('click', () => { setMainPhoto(main, src); tag.hidden = true; strip.querySelectorAll('.modal-thumb').forEach(e=>e.classList.remove('active')); t.classList.add('active'); });
         strip.appendChild(t);
       });
       imgDiv.appendChild(strip);
@@ -205,6 +228,7 @@ function renderOptions(){
   box.style.display = html ? 'flex' : 'none';
   box.style.flexDirection = 'column'; box.style.gap = '20px';
 }
+function setMainPhoto(img, src){ if(MOTION.swap) MOTION.swap(img, src); else img.src = src; }
 // Foto zum Aufsatz: erst das eigene Foto dieser Flasche, sonst ein Beispielfoto (mit Hinweis)
 function aufsatzPhoto(p, key){
   if(typeof BILDER === 'undefined' || !key) return null;
@@ -220,7 +244,7 @@ function showAufsatzPhoto(gi){
   if(!main || !o) return;
   const ph = aufsatzPhoto(p, o.key);
   const short = o.name.split(' ')[0];
-  if(ph){ main.src = ph.src; tag.hidden = !ph.example; tag.textContent = 'Beispielfoto: ' + short + ' an einer anderen Flasche'; }
+  if(ph){ setMainPhoto(main, ph.src); tag.hidden = !ph.example; tag.textContent = 'Beispielfoto: ' + short + ' an einer anderen Flasche'; }
   else { tag.hidden = false; tag.textContent = 'Foto mit ' + short + ' folgt'; }
   document.querySelectorAll('#modalImg .modal-thumb').forEach(e => e.classList.remove('active'));
 }
@@ -233,21 +257,32 @@ function pickAddon(gi, oi){
   if(g.type === 'single') showAufsatzPhoto(gi);
 }
 function modalQty(d){ sel.qty = Math.min(20, Math.max(1, sel.qty + d)); document.getElementById('modalQty').textContent = sel.qty; updateModalPrice(); }
+function setPrice(el, value){ if(!el) return; if(MOTION.tween) MOTION.tween(el, value, fmt); else el.textContent = fmt(value); }
 function updateModalPrice(){
   const p = currentProduct;
   const addons = chosenAddons(p, sel.addons);
   const unit = unitPrice(p, addons), sum = unit * sel.qty;
-  document.getElementById('modalPrice').textContent = fmt(sum);
+  setPrice(document.getElementById('modalPrice'), sum);
   const parts = [`${p.label} ${fmt(p.price)}`].concat(addons.map(a => `${a.name} ${fmt(a.price)}`));
   document.getElementById('modalBreakdown').textContent = (sel.qty > 1 ? `${sel.qty} × ${fmt(unit)} · ` : '') + parts.join(' + ') + ' · inkl. MwSt.';
   document.getElementById('modalAddBtn').textContent = `In den Warenkorb · ${fmt(sum)}`;
 }
 function addToCart(){
   const p = currentProduct;
+  const main = document.getElementById('modalMainImg');
+  const rect = main ? main.getBoundingClientRect() : null;
+  const src = main ? main.getAttribute('src') : p.image;
   addItemToCart(p, p.option ? p.option.choices[sel.option] : '', chosenAddons(p, sel.addons), sel.qty);
-  showToast(sel.qty === 1 ? `${p.name} hinzugefügt` : `${sel.qty} × ${p.name} hinzugefügt`);
   closeModal();
-  setTimeout(openCart, 250);
+  if(MOTION.on && MOTION.fly && rect){
+    MOTION.fly(rect, src, () => { bumpBadge(); openCart(); });
+  } else {
+    showToast(sel.qty === 1 ? `${p.name} hinzugefügt` : `${sel.qty} × ${p.name} hinzugefügt`);
+    setTimeout(openCart, 250);
+  }
+}
+function bumpBadge(){
+  document.querySelectorAll('.cart-badge').forEach(b => { b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); });
 }
 function buyNow(){
   const p = currentProduct;
@@ -263,22 +298,23 @@ function addItemToCart(product, option, addons, qty){
 }
 
 // ── WARENKORB (Seitenleiste) ──
+const BOTTLE_SVG = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true">' + (typeof AUFSATZ_ICONS !== 'undefined' ? AUFSATZ_ICONS.korken : '') + '</svg>';
 function updateCartUI(){
   const total = cartSubtotal();
   const count = cart.reduce((s,i)=>s+i.qty,0);
   document.querySelectorAll('.cart-badge').forEach(b => { b.textContent = count; b.classList.toggle('visible', count>0); });
-  document.getElementById('cartTotal').textContent = fmt(total);
+  setPrice(document.getElementById('cartTotal'), total);
   document.getElementById('checkoutBtn').disabled = count===0;
   const sc = shippingCost('versand');
   document.getElementById('cartNote').textContent = sc > 0 ? `inkl. MwSt. · zzgl. Versand ${fmt(sc)} oder kostenlose Abholung in Dieburg` : 'inkl. MwSt. · versandkostenfrei';
   updateExpressVisibility();
   const container = document.getElementById('cartItems');
-  if(cart.length===0){ container.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🍾</div><p>Noch leer</p></div>'; return; }
-  container.innerHTML = cart.map(item => {
+  if(cart.length===0){ container.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">' + BOTTLE_SVG + '</div><p>Noch leer</p></div>'; return; }
+  container.innerHTML = cart.map((item, idx) => {
     const p = PRODUCTS.find(x=>x.id===item.productId);
     const details = itemDetails(item);
-    return `<div class="cart-item">
-      <div class="cart-item-img">${p && p.image ? `<img src="${p.image}" alt="">` : '🍾'}</div>
+    return `<div class="cart-item" style="--i:${idx}">
+      <div class="cart-item-img">${p && p.image ? `<img src="${p.image}" alt="">` : BOTTLE_SVG}</div>
       <div class="cart-item-info">
         <div class="cart-item-name">${esc(item.name)}</div>
         ${details.length ? `<div class="cart-item-variant">${esc(details.join(' · '))}</div>` : ''}
@@ -301,7 +337,12 @@ function changeQty(key, delta){
   saveCart(); updateCartUI();
 }
 function removeItem(key){ cart = cart.filter(i=>i.key!==key); saveCart(); updateCartUI(); }
-function openCart(){ initPayPal(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); syncScrollLock(); }
+function openCart(){
+  initPayPal();
+  const side = document.getElementById('cartSidebar');
+  if(!side.classList.contains('open')){ side.classList.add('fresh'); clearTimeout(openCart._t); openCart._t = setTimeout(() => side.classList.remove('fresh'), 1400); }
+  document.getElementById('cartOverlay').classList.add('open'); side.classList.add('open'); syncScrollLock();
+}
 function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartSidebar').classList.remove('open'); syncScrollLock(); }
 
 // ── KASSE ──
@@ -337,7 +378,13 @@ function renderCheckoutSummary(){
   document.getElementById('checkoutSummary').innerHTML = lines + `<div class="co-sums">
     <div><span>Zwischensumme</span><span>${fmt(sub)}</span></div>
     <div><span>${SHIPPING[shippingKey].price === 0 ? 'Abholung' : 'Versand (DHL)'}</span><span>${ship > 0 ? fmt(ship) : 'kostenlos'}</span></div></div>`;
-  document.getElementById('checkoutFinal').innerHTML = `<span>Gesamt<small>inkl. MwSt.${ship > 0 ? ' und Versand' : ', Abholung'}</small></span><strong>${fmt(total)}</strong>`;
+  const finalBox = document.getElementById('checkoutFinal');
+  const before = finalBox.querySelector('strong');
+  const prev = before ? before.dataset.v : '';
+  finalBox.innerHTML = `<span>Gesamt<small>inkl. MwSt.${ship > 0 ? ' und Versand' : ', Abholung'}</small></span><strong></strong>`;
+  const strong = finalBox.querySelector('strong');
+  if(prev) strong.dataset.v = prev;
+  setPrice(strong, total);
 }
 function openCheckout(fromId){
   closeCart();
@@ -392,7 +439,8 @@ function nextStepsBlock(paid, pickup){
     ${pickup && paid ? '<li>Wir sagen dir Bescheid, sobald deine Bestellung im Padella Vino abholbereit ist.</li>' : last}
   </ol></div>`;
 }
-function openSuccess(title, html, boxHtml){
+function openSuccess(title, html, boxHtml, state){
+  const icon = document.querySelector('.success-icon'); if(icon) icon.dataset.state = state || 'ok';
   document.getElementById('successTitle').textContent = title;
   document.getElementById('successText').innerHTML = html;
   document.getElementById('successPayment').innerHTML = boxHtml;
@@ -435,7 +483,7 @@ async function submitOrder(e){
     openSuccess('Bestellung abgeschlossen!', `Danke, ${esc(fname)}! Deine Bestellnummer ist <span class="order-no">${orderNo}</span>. Du erhältst in Kürze eine Bestätigung mit den Zahlungsdaten an <strong>${esc(email)}</strong>.`, nextStepsBlock(false, pickup));
   } catch(err) {
     console.error('Bestellung senden', err);
-    openSuccess('Fast geschafft!', 'Die automatische Übermittlung hat gerade nicht geklappt. Bitte schick uns deine Bestellung per E-Mail – der Button öffnet dein Mail-Programm mit allen Daten. Dein Warenkorb bleibt so lange erhalten.', `<div class="pay-box">${mailBlock(link, 'Bestellung abschicken')}</div>`);
+    openSuccess('Fast geschafft!', 'Die automatische Übermittlung hat gerade nicht geklappt. Bitte schick uns deine Bestellung per E-Mail – der Button öffnet dein Mail-Programm mit allen Daten. Dein Warenkorb bleibt so lange erhalten.', `<div class="pay-box">${mailBlock(link, 'Bestellung abschicken')}</div>`, 'mail');
     document.getElementById('orderText').textContent = lastOrderText;
   } finally { btn.disabled = false; btn.textContent = oldLabel; }
 }
@@ -568,6 +616,8 @@ document.addEventListener('keydown', e => {
 // ── START ──
 history.replaceState(null, '');
 updateCartUI();
+window.addEventListener('pageshow', e => { if(e.persisted){ cart = loadCart(); updateCartUI(); } });
+window.addEventListener('storage', e => { if(e.key === 'flaconella_cart'){ cart = loadCart(); updateCartUI(); } });
 // Direktlink auf ein Produkt: /windlichter/#windlicht-traube
 (function(){
   const slug = (location.hash || '').replace(/^#/, '');
