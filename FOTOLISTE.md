@@ -32,7 +32,7 @@ Dateiname `<produkt>--<kürzel>.webp`, z. B. `fotos-original/aufsatz/flasche-hex
 ## So fotografieren
 
 - Hochformat, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund ohne Requisiten (keine Blumen, Teller, Stoffe daneben).
-- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` schneidet zu, setzt es mittig und tauscht den hellen Hintergrund gegen den dunklen Lichtschein der Seite.
+- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` stellt es frei (der Hintergrund wird durchsichtig) und setzt es mittig – das Produkt selbst bleibt unverändert.
 - Gleicher Abstand und gleiche Höhe wie bei den anderen Fotos, weiches Licht von vorn – harte Schatten und farbige Lichtflecken auf dem Tisch vermeiden.
 - Licht-Aufsätze (Lichterkette, Lampenschirm, Kerze) zusätzlich einmal eingeschaltet im Halbdunkel.
 - Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen. Die Originale bleiben in `fotos-original/` unverändert liegen.

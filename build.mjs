@@ -57,7 +57,7 @@ const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox=
     rows.push(`| ${p.name} | ` + AUFSATZ.map(o => have[o.key] ? '✓' : '–').join(' | ') + ' |');
   }
   rows.push('', '## So fotografieren', '', '- Hochformat, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund ohne Requisiten (keine Blumen, Teller, Stoffe daneben).',
-    '- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` schneidet zu, setzt es mittig und tauscht den hellen Hintergrund gegen den dunklen Lichtschein der Seite.',
+    '- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` stellt es frei (der Hintergrund wird durchsichtig) und setzt es mittig – das Produkt selbst bleibt unverändert.',
     '- Gleicher Abstand und gleiche Höhe wie bei den anderen Fotos, weiches Licht von vorn – harte Schatten und farbige Lichtflecken auf dem Tisch vermeiden.',
     '- Licht-Aufsätze (Lichterkette, Lampenschirm, Kerze) zusätzlich einmal eingeschaltet im Halbdunkel.',
     '- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen. Die Originale bleiben in `fotos-original/` unverändert liegen.');
@@ -262,7 +262,7 @@ function splitWords(html){
 
 const catTiles = () => CATEGORIES.map((c, i) => `
     <a href="/${c.slug}/" class="cat-tile" data-reveal style="--i:${i}">
-      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)}" loading="lazy" width="600" height="360"></span>
+      <span class="pic" data-cursor="Ansehen"><img src="/images/kategorie-${c.key}.webp" alt="${esc(c.name)}" loading="lazy" width="600" height="360"></span>
       <div class="row"><span class="name">${c.name}<i aria-hidden="true">→</i></span><span class="price">${c.priceHint}</span></div>
       <p class="desc">${c.desc}</p>
     </a>`).join('');
@@ -328,7 +328,7 @@ function categoryPage(c){
     <div><h1 data-split="intro">${c.name}</h1><p class="intro" data-intro style="--i:2">${c.intro}</p></div>
     <div class="price-box" data-glow data-intro style="--i:3"><span class="big">${c.box[0]}</span><span class="sub">${c.box[1]}</span></div>
   </div>
-  <figure class="cat-banner" data-intro="fade" style="--i:2"><img src="/images/kategorie-${c.key}.jpg" alt="${esc(c.name)} von Flaconella" width="1200" height="720"></figure>
+  <figure class="cat-banner" data-intro="fade" style="--i:2"><img src="/images/kategorie-${c.key}.webp" alt="${esc(c.name)} von Flaconella" width="1200" height="720"></figure>
   <div class="chips-row" data-intro="fade" style="--i:4">${CATEGORIES.map(x => `<a href="/${x.slug}/" class="chip-link${x.key===c.key?' on':''}">${x.name}</a>`).join('')}</div>
   <div class="grid-meta"><span>${items.length} ${items.length === 1 ? 'Produkt' : 'Produkte'}</span><span>Alle Preise inkl. MwSt.</span></div>
   <div class="product-grid">${items.map((p, i) => productCard(p, false, i)).join('')}</div>
