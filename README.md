@@ -14,7 +14,9 @@ src/pages/          Seiteninhalte: start.html, impressum.html, datenschutz.html,
 build.mjs           erzeugt daraus alle Seiten (index.html, flaschen/, windlichter/, kerzen/, sets/,
                     impressum/, datenschutz/, agb/, widerruf/) und sitemap.xml
 order.php           Bestell- und Kontakt-Mailer (läuft auf dem IONOS-Server)
-images/, fonts/     Fotos, Logo; Schriften selbst gehostet
+images/, fonts/     Fotos (dunkel aufbereitet), Logo; Schriften selbst gehostet
+fotos-original/     Originalfotos mit hellem Hintergrund – Quelle für images/, wird nicht hochgeladen
+tools/fotos.py      bereitet die Originalfotos für die dunkle Seite auf – wird nicht hochgeladen
 brand/              Marken-Material (Logos, Kontext, Aufbauplan) – wird nicht hochgeladen
 ```
 
@@ -27,6 +29,27 @@ python3 -m http.server 8089 --bind 127.0.0.1    # lokal ansehen: http://127.0.0.
 
 Die erzeugten HTML-Dateien sind eingecheckt; der GitHub-Workflow baut sie vor dem Upload trotzdem frisch.
 Produkte, Preise und Aufsätze pflegst du nur in `js/products.js`, dann `node build.mjs` ausführen und pushen.
+
+## Fotos
+
+Die Seite ist dunkel, die Originalfotos haben einen hellen Hintergrund. Damit kein heller Kasten in der Seite steht,
+werden die Fotos einmal aufbereitet:
+
+```
+python3 tools/fotos.py                          # alle Fotos aus fotos-original/ neu nach images/ schreiben
+python3 tools/fotos.py lampe-hexagonal.webp     # nur ein Foto (sein Sammelbild wird mit erzeugt)
+```
+
+- `fotos-original/` enthält die unveränderten Originale, `images/` die Fassungen für die Seite. Nur `images/` geht online.
+- Das Skript schneidet das Passepartout weg, setzt das Produkt mittig ins Hochformat 4:5 und tauscht den hellen
+  Hintergrund gegen einen dunklen, warmen Lichtschein, der in die Seitenfarbe ausläuft. Klares Glas wird durchsichtig,
+  Schatten bleiben Schatten.
+- Die vier Kategoriebilder (`images/kategorie-*.jpg`) setzt es aus den Einzelfotos zusammen; welche Fotos dazugehören,
+  steht oben im Skript unter `SAMMELBILDER`.
+- Sieht ein Foto nicht sauber aus (Requisiten neben dem Produkt, weißes Etikett vor weißem Hintergrund), hilft ein
+  Eintrag unter `EINSTELLUNG` im Skript. Am einfachsten sind Fotos vor ruhigem, hellem Hintergrund ohne Deko.
+- Im Stylesheet steht dazu der Abschnitt „FOTOS“: Auf den etwas helleren Flächen hellt das Foto die Fläche nur auf
+  (`mix-blend-mode: lighten`), deshalb ist nirgends eine Bildkante zu sehen.
 
 ## Bewegung
 

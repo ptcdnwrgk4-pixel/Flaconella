@@ -71,5 +71,6 @@ genannten Dateien und Ordner in das Webspace-Verzeichnis legen, das der Domain z
 ## Spätere Änderungen
 
 Produkte, Preise, Aufsätze und Versand stehen in `js/products.js`. Seitentexte (Startseite, Rechtstexte) in `src/pages/`.
-Neue Fotos als WebP in `images/` legen und im Produkt eintragen. Danach `node build.mjs` ausführen, committen und auf
-`main` pushen – der Workflow lädt alles hoch. Für Instagram-Links: `https://flaconella.de/windlichter/#windlicht-traube`.
+Neue Fotos: Original (heller Hintergrund) nach `fotos-original/` legen, `python3 tools/fotos.py` ausführen – das schreibt
+die dunkel aufbereitete Fassung nach `images/` – und das Foto im Produkt eintragen. Danach `node build.mjs` ausführen,
+committen und auf `main` pushen – der Workflow lädt alles hoch. Für Instagram-Links: `https://flaconella.de/windlichter/#windlicht-traube`.

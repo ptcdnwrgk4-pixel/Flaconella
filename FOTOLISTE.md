@@ -1,10 +1,10 @@
 # Fotoliste Flaconella
 
-Automatisch erzeugt von `node build.mjs` am 2026-11-26. Fotos in `images/aufsatz/` legen und neu bauen.
+Automatisch erzeugt von `node build.mjs` am 2026-11-26. Originalfotos in `fotos-original/aufsatz/` legen, dann `python3 tools/fotos.py` und `node build.mjs` ausführen.
 
 ## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)
 
-Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.
+Dateiname = Kürzel, z. B. `fotos-original/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.
 
 | Aufsatz | Kürzel | Foto |
 |---|---|---|
@@ -16,7 +16,7 @@ Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, sol
 
 ## Eigenes Foto je Flasche und Aufsatz (empfohlen)
 
-Dateiname `<produkt>--<kürzel>.webp`, z. B. `images/aufsatz/flasche-hexagon--lampenschirm.webp`.
+Dateiname `<produkt>--<kürzel>.webp`, z. B. `fotos-original/aufsatz/flasche-hexagon--lampenschirm.webp`.
 
 | Produkt | Korken | Dekokorken | LED-Lichterkette im Korken | Lampenschirm mit Licht | Kerzenaufsatz mit Wachskerze |
 |---|---|---|---|---|---|
@@ -31,7 +31,8 @@ Dateiname `<produkt>--<kürzel>.webp`, z. B. `images/aufsatz/flasche-hexagon--la
 
 ## So fotografieren
 
-- Hochformat 4:5, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund wie bei den bisherigen Fotos.
-- Flasche mittig, gleiche Höhe und gleicher Abstand wie bei den anderen Fotos, damit die Bilder beim Umschalten nicht springen.
+- Hochformat, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund ohne Requisiten (keine Blumen, Teller, Stoffe daneben).
+- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` schneidet zu, setzt es mittig und tauscht den hellen Hintergrund gegen den dunklen Lichtschein der Seite.
+- Gleicher Abstand und gleiche Höhe wie bei den anderen Fotos, weiches Licht von vorn – harte Schatten und farbige Lichtflecken auf dem Tisch vermeiden.
 - Licht-Aufsätze (Lichterkette, Lampenschirm, Kerze) zusätzlich einmal eingeschaltet im Halbdunkel.
-- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen.
+- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen. Die Originale bleiben in `fotos-original/` unverändert liegen.

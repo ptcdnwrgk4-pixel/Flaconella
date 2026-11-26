@@ -41,8 +41,8 @@ const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox=
 {
   const rows = [], missing = [];
   const allKeys = AUFSATZ.map(o => o.key);
-  rows.push('# Fotoliste Flaconella', '', `Automatisch erzeugt von \`node build.mjs\` am ${new Date().toISOString().slice(0,10)}. Fotos in \`images/aufsatz/\` legen und neu bauen.`, '',
-    '## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)', '', 'Dateiname = Kürzel, z. B. `images/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.', '',
+  rows.push('# Fotoliste Flaconella', '', `Automatisch erzeugt von \`node build.mjs\` am ${new Date().toISOString().slice(0,10)}. Originalfotos in \`fotos-original/aufsatz/\` legen, dann \`python3 tools/fotos.py\` und \`node build.mjs\` ausführen.`, '',
+    '## Beispielfoto je Aufsatz (Pflicht, eins pro Aufsatz)', '', 'Dateiname = Kürzel, z. B. `fotos-original/aufsatz/lampenschirm.webp`. Wird gezeigt, solange es für eine Flasche kein eigenes Foto gibt.', '',
     '| Aufsatz | Kürzel | Foto |', '|---|---|---|');
   for (const k of allKeys) {
     const name = AUFSATZ.find(o => o.key === k).name;
@@ -50,16 +50,17 @@ const icon = (key, size = 22) => `<svg width="${size}" height="${size}" viewBox=
     if (!have) missing.push(`${k}.webp`);
     rows.push(`| ${name} | \`${k}\` | ${have ? 'vorhanden: `' + have + '`' : '**fehlt**'} |`);
   }
-  rows.push('', '## Eigenes Foto je Flasche und Aufsatz (empfohlen)', '', 'Dateiname `<produkt>--<kürzel>.webp`, z. B. `images/aufsatz/flasche-hexagon--lampenschirm.webp`.', '',
+  rows.push('', '## Eigenes Foto je Flasche und Aufsatz (empfohlen)', '', 'Dateiname `<produkt>--<kürzel>.webp`, z. B. `fotos-original/aufsatz/flasche-hexagon--lampenschirm.webp`.', '',
     '| Produkt | ' + AUFSATZ.map(o => o.name).join(' | ') + ' |', '|---|' + AUFSATZ.map(() => '---').join('|') + '|');
   for (const p of PRODUCTS.filter(aufsatzGroup)) {
     const have = BILDER.produkt[p.slug] || {};
     rows.push(`| ${p.name} | ` + AUFSATZ.map(o => have[o.key] ? '✓' : '–').join(' | ') + ' |');
   }
-  rows.push('', '## So fotografieren', '', '- Hochformat 4:5, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund wie bei den bisherigen Fotos.',
-    '- Flasche mittig, gleiche Höhe und gleicher Abstand wie bei den anderen Fotos, damit die Bilder beim Umschalten nicht springen.',
+  rows.push('', '## So fotografieren', '', '- Hochformat, mindestens 1200 × 1500 Pixel, heller ruhiger Hintergrund ohne Requisiten (keine Blumen, Teller, Stoffe daneben).',
+    '- Das Produkt ganz im Bild, rundherum etwas Luft. `tools/fotos.py` schneidet zu, setzt es mittig und tauscht den hellen Hintergrund gegen den dunklen Lichtschein der Seite.',
+    '- Gleicher Abstand und gleiche Höhe wie bei den anderen Fotos, weiches Licht von vorn – harte Schatten und farbige Lichtflecken auf dem Tisch vermeiden.',
     '- Licht-Aufsätze (Lichterkette, Lampenschirm, Kerze) zusätzlich einmal eingeschaltet im Halbdunkel.',
-    '- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen.');
+    '- Als WebP oder JPG speichern; Dateiname klein, ohne Umlaute und Leerzeichen. Die Originale bleiben in `fotos-original/` unverändert liegen.');
   writeFileSync(join(ROOT, 'FOTOLISTE.md'), rows.join('\n') + '\n');
   if (missing.length) console.log('Fehlende Beispielfotos:', missing.join(', '));
 }
